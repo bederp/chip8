@@ -1,0 +1,13 @@
+## Java
+
+*.class
+*.war
+*.ear
+hs_err_pid*
+
+## Gradle
+
+/local.properties
+.gradle/
+.idea/
+chip8.iml
