@@ -2,6 +2,7 @@ package com.pbeder.chip8;
 
 class Cpu {
 
+    private static final int INSTRUCTION_SIZE_IN_BYTES = 2;
     private final Chip8 chip8;
 
     Cpu(Chip8 chip8) {
@@ -9,6 +10,7 @@ class Cpu {
     }
 
     void handle(short opcode) {
+        chip8.pc+= INSTRUCTION_SIZE_IN_BYTES;
         switch (opcode & 0xF000) {
             case 0x0000:
                 _0(opcode);
@@ -106,10 +108,8 @@ class Cpu {
         The interpreter reads n bytes from memory, starting at the address stored in I. These bytes are then displayed as sprites on screen at coordinates (Vx, Vy). Sprites are XORed onto the existing screen. If this causes any pixels to be erased, VF is set to 1, otherwise it is set to 0. If the sprite is positioned so part of it is outside the coordinates of the display, it wraps around to the opposite side of the screen. See instruction 8xy3 for more information on XOR, and section 2.4, Display, for more information on the Chip-8 screen and sprites.
     */
     private void _0xDxyn(short opcode) {
-        byte x;
-        byte y;
-        x = (byte) (opcode >> 8 & 0xF);
-        y = (byte) (opcode >> 4 & 0xF);
+        byte x = getX(opcode);
+        byte y = getY(opcode);
         byte xx = chip8.registers[x];
         byte yy = chip8.registers[y];
         final byte n = (byte) (opcode & 0xF);
@@ -117,7 +117,6 @@ class Cpu {
             final byte sprite = chip8.memory[chip8.I + i];
             chip8.writeSprite(xx, (byte) ((yy + i) % 32), sprite);
         }
-        chip8.programCounter++;
     }
 
     /*
@@ -126,13 +125,13 @@ class Cpu {
         The interpreter generates a random number from 0 to 255, which is then ANDed with the value kk. The results are stored in Vx. See instruction 8xy2 for more information on AND.
     */
     private void _0xCxkk(short opcode) {
+        //TODO continue opcode refactor
         byte x;
         byte kk;
         x = (byte) (opcode >> 8 & 0xF);
         kk = (byte) (opcode & 0x00FF);
         final byte randomByte = chip8.getRandomByte();
         chip8.registers[x] = (byte) (randomByte & kk);
-        chip8.programCounter++;
     }
 
     /*
@@ -142,7 +141,7 @@ class Cpu {
     */
     private void _0xBnnn(short opcode) {
         short nnn = (short) (opcode & 0x0FFF);
-        chip8.programCounter = (short) (nnn + chip8.registers[0]);
+        chip8.pc = (short) (nnn + chip8.registers[0]);
     }
 
     /*
@@ -152,7 +151,6 @@ class Cpu {
     */
     private void _0xAnnn(short opcode) {
         chip8.I = (short) (opcode & 0x0FFF);
-        chip8.programCounter++;
     }
 
 
@@ -167,9 +165,8 @@ class Cpu {
         x = ((byte) (opcode >>> 8 & 0xF));
         y = ((byte) (opcode >>> 4 & 0xF));
         if (chip8.registers[x] != chip8.registers[y]) {
-            chip8.programCounter++;
+            chip8.pc+= INSTRUCTION_SIZE_IN_BYTES;
         }
-        chip8.programCounter++;
     }
 
     /*
@@ -183,7 +180,6 @@ class Cpu {
         final int msb = 0x80 & chip8.registers[x];
         chip8.setCarry(msb >>> 7 == 1);
         chip8.registers[x] = (byte) (chip8.registers[x] << 1);
-        chip8.programCounter++;
     }
 
     /*
@@ -199,7 +195,6 @@ class Cpu {
         int sum = chip8.registers[y] - chip8.registers[x];
         chip8.setCarry(Byte.toUnsignedInt(chip8.registers[y]) > Byte.toUnsignedInt(chip8.registers[x]));
         chip8.registers[x] = (byte) sum;
-        chip8.programCounter++;
     }
 
     /*
@@ -213,7 +208,6 @@ class Cpu {
         final int lsb = 0x01 & chip8.registers[x];
         chip8.setCarry(lsb == 1);
         chip8.registers[x] = (byte) (chip8.registers[x] >>> 1);
-        chip8.programCounter++;
     }
 
     /*
@@ -229,7 +223,6 @@ class Cpu {
         int sum = chip8.registers[x] - chip8.registers[y];
         chip8.setCarry(Byte.toUnsignedInt(chip8.registers[x]) > Byte.toUnsignedInt(chip8.registers[y]));
         chip8.registers[x] = (byte) sum;
-        chip8.programCounter++;
     }
 
     /*
@@ -245,7 +238,6 @@ class Cpu {
         int sum = chip8.registers[x] + chip8.registers[y];
         chip8.setCarry(sum > 255);
         chip8.registers[x] = (byte) sum;
-        chip8.programCounter++;
     }
 
     /*
@@ -259,7 +251,6 @@ class Cpu {
         x = ((byte) (opcode >>> 8 & 0xF));
         y = ((byte) (opcode >>> 4 & 0xF));
         chip8.registers[x] = (byte) (chip8.registers[x] ^ chip8.registers[y]);
-        chip8.programCounter++;
     }
 
     /*
@@ -273,7 +264,6 @@ class Cpu {
         x = ((byte) (opcode >>> 8 & 0xF));
         y = ((byte) (opcode >>> 4 & 0xF));
         chip8.registers[x] = (byte) (chip8.registers[x] & chip8.registers[y]);
-        chip8.programCounter++;
     }
 
     /*
@@ -287,7 +277,6 @@ class Cpu {
         x = ((byte) (opcode >>> 8 & 0xF));
         y = ((byte) (opcode >>> 4 & 0xF));
         chip8.registers[x] = (byte) (chip8.registers[x] | chip8.registers[y]);
-        chip8.programCounter++;
     }
 
     /*
@@ -301,7 +290,6 @@ class Cpu {
         x = ((byte) (opcode >>> 8 & 0xF));
         y = ((byte) (opcode >>> 4 & 0xF));
         chip8.registers[x] = chip8.registers[y];
-        chip8.programCounter++;
     }
 
     /*
@@ -315,7 +303,6 @@ class Cpu {
         x = ((byte) (opcode >>> 8 & 0xF));
         kk = (byte) (opcode & 0xFF);
         chip8.registers[x] += kk;
-        chip8.programCounter++;
     }
 
     /*
@@ -329,7 +316,6 @@ class Cpu {
         x = ((byte) (opcode >>> 8 & 0xF));
         kk = (byte) (opcode & 0xFF);
         chip8.registers[x] = kk;
-        chip8.programCounter++;
     }
 
     /*
@@ -342,9 +328,7 @@ class Cpu {
         x = ((byte) (opcode >>> 8 & 0xF));
         byte y = ((byte) (opcode >>> 4 & 0xF));
         if (chip8.registers[x] == chip8.registers[y]) {
-            chip8.programCounter += 2;
-        } else {
-            chip8.programCounter++;
+            chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
     }
 
@@ -359,9 +343,7 @@ class Cpu {
         kk = (byte) (opcode & 0xFF);
         x = ((byte) (opcode >>> 8 & 0xF));
         if (chip8.registers[x] != kk) {
-            chip8.programCounter += 2;
-        } else {
-            chip8.programCounter++;
+            chip8.pc+= INSTRUCTION_SIZE_IN_BYTES;
         }
     }
 
@@ -374,9 +356,7 @@ class Cpu {
         byte kk = (byte) (opcode & 0xFF);
         byte x = ((byte) (opcode >>> 8 & 0xF));
         if (chip8.registers[x] == kk) {
-            chip8.programCounter += 2;
-        } else {
-            chip8.programCounter++;
+            chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
     }
 
@@ -386,8 +366,9 @@ class Cpu {
         The interpreter increments the stack pointer, then puts the current PC on the top of the stack. The PC is then set to nnn.
     */
     private void _0x2nnn(short opcode) {
-        chip8.stack[chip8.stackPointer++] = ++chip8.programCounter;
-        chip8.programCounter = (short) (opcode & 0x0FFF);
+        chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
+        chip8.stack[chip8.stackPointer++] = chip8.pc;
+        chip8.pc = (short) (opcode & 0x0FFF);
     }
 
     /*
@@ -396,7 +377,7 @@ class Cpu {
         The interpreter sets the program counter to nnn.
     */
     private void _0x1nnn(short opcode) {
-        chip8.programCounter = (short) (opcode & 0x0FFF);
+        chip8.pc = (short) (opcode & 0x0FFF);
     }
 
     /*
@@ -414,7 +395,7 @@ class Cpu {
         The interpreter sets the program counter to the address at the top of the stack, then subtracts 1 from the stack pointer.
     */
     private void _0x00EE() {
-        chip8.programCounter = chip8.stack[--chip8.stackPointer];
+        chip8.pc = chip8.stack[--chip8.stackPointer];
     }
 
     /*
@@ -423,7 +404,6 @@ class Cpu {
     */
     private void _0x00E0() {
         chip8.clearScreen = true;
-        chip8.programCounter += 2;
     }
 
     /*
@@ -432,11 +412,24 @@ class Cpu {
         Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
     */
     private void _0xEx9E(short opcode) {
+        //TODO IMPLEMENTATION
         byte x = getX(opcode);
     }
 
     private byte getX(short opcode) {
         return (byte) (opcode >>> 8 & 0xF);
+    }
+
+    private byte getY(short opcode) {
+        return (byte) (opcode >>> 4 & 0xF);
+    }
+
+    private byte getKK(short opcode) {
+        return (byte) (opcode & 0xFF);
+    }
+
+    private byte getNNN(short opcode) {
+        return (byte) (opcode & 0xFFF);
     }
 }
 //

@@ -21,7 +21,7 @@ public abstract class Chip8TestBase {
 
     void assertProgramCounterIs(int previousFrameAddress) {
         //Chip8 PC is 12 bit but in Java I've used short to represent it that's why 0xFFF
-        assertThat(chip8.programCounter, is((short) (previousFrameAddress & 0xFFF)));
+        assertThat(chip8.pc, is((short) (previousFrameAddress & 0xFFF)));
     }
 
     void assertStackPointerIs(int expectedStackPointer) {

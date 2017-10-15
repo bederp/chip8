@@ -56,7 +56,7 @@ public class CpuTest extends Chip8TestBase {
         short previousPC = 0x0CDE;
 
         chip8.stackPointer = previousStackPointer;
-        chip8.programCounter = previousPC;
+        chip8.pc = previousPC;
         //When
         chip8.handleOpcode(opCodeWithJumpAddress);
         //Then
@@ -74,7 +74,7 @@ public class CpuTest extends Chip8TestBase {
         final byte x = 7;
         short pc = 0x5;
 
-        chip8.programCounter = pc;
+        chip8.pc = pc;
         chip8.registers[x] = vX;
         //When
         chip8.handleOpcode(opCode);
@@ -91,7 +91,7 @@ public class CpuTest extends Chip8TestBase {
         final byte x = 7;
         short pc = 0x5;
 
-        chip8.programCounter = pc;
+        chip8.pc = pc;
         chip8.registers[x] = vX;
         //When
         chip8.handleOpcode(instruction);
@@ -108,7 +108,7 @@ public class CpuTest extends Chip8TestBase {
         final byte x = 0x7;
         short pc = 0x5;
 
-        chip8.programCounter = pc;
+        chip8.pc = pc;
         chip8.registers[x] = vX;
         //When
         chip8.handleOpcode(instruction);
@@ -125,7 +125,7 @@ public class CpuTest extends Chip8TestBase {
         final byte x = 0x7;
         short pc = 0x5;
 
-        chip8.programCounter = pc;
+        chip8.pc = pc;
         chip8.registers[x] = vX;
         //When
         chip8.handleOpcode(instruction);
@@ -145,7 +145,7 @@ public class CpuTest extends Chip8TestBase {
 
         chip8.registers[x] = value;
         chip8.registers[y] = value;
-        chip8.programCounter = pc;
+        chip8.pc = pc;
         //When
         chip8.handleOpcode(instruction);
         //Then
@@ -165,7 +165,7 @@ public class CpuTest extends Chip8TestBase {
 
         chip8.registers[x] = vX;
         chip8.registers[y] = vY;
-        chip8.programCounter = pc;
+        chip8.pc = pc;
         //When
         chip8.handleOpcode(opCode);
         //Then
@@ -491,7 +491,7 @@ public class CpuTest extends Chip8TestBase {
         final int pc = 10;
         chip8.registers[x] = vX;
         chip8.registers[y] = vY;
-        chip8.programCounter = pc;
+        chip8.pc = pc;
         //When
         chip8.handleOpcode(opCode);
         //Then
@@ -509,7 +509,7 @@ public class CpuTest extends Chip8TestBase {
         final int pc = 10;
         chip8.registers[x] = vX;
         chip8.registers[y] = vX;
-        chip8.programCounter = pc;
+        chip8.pc = pc;
         //When
         chip8.handleOpcode(opCode);
         //Then
@@ -532,7 +532,7 @@ public class CpuTest extends Chip8TestBase {
     public void shouldJumpToNNNPlusV0() {
         //Given
         final short opCode = (short) 0xB234;
-        chip8.programCounter = (short) 0x0011;
+        chip8.pc = (short) 0x0011;
         chip8.registers[0] = (byte) 0x0A;
         //When
         chip8.handleOpcode(opCode);
