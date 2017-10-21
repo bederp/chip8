@@ -44,8 +44,12 @@ public abstract class Chip8TestBase {
         assertThat(chip8.registers[0xF], is((byte) 0));
     }
 
-    void assertIIsEqualTo(int i) {
+    void assertIIs(int i) {
         assertThat(chip8.I, is((short) i));
+    }
+
+    void assertMemoryIs(short address, byte value) {
+        assertThat(chip8.memory[address], is(value));
     }
 
     // This is manual test check if console output contains default fonts -> 0-9, A-F

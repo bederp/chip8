@@ -44,8 +44,8 @@ public class Application extends ApplicationAdapter {
 
     @Override
     public void render() {
-//        chip8.fpsStep();
-        chip8.step();
+        chip8.fpsStep();
+//        chip8.step();
         draw(chip8.getScreen());
         fps.log();
     }

@@ -22,7 +22,6 @@ public class Chip8 {
     short pc;
     byte stackPointer;
     short[] stack = new short[RECURSION_DEPTH];
-    boolean clearScreen;
     private Cpu cpu = new Cpu(this);
     private Supplier<Byte> randomGenerator;
     private Chip8Screen screen;
@@ -91,8 +90,7 @@ public class Chip8 {
     }
 
     private boolean notScreenDrawingOpcode(short opcode) {
-        opcode = (short) (opcode & 0xF000);
-        return (opcode ^ 0xD000) != 0;
+        return (byte) (opcode >>> 3) == 0xD;
     }
 
     private short getOpcode() {

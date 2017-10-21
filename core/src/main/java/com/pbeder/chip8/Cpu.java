@@ -2,6 +2,7 @@ package com.pbeder.chip8;
 
 import static com.pbeder.chip8.Fonts.FONT_HEIGHT;
 import static java.lang.Byte.toUnsignedInt;
+import static java.lang.System.arraycopy;
 
 class Cpu {
 
@@ -517,7 +518,8 @@ class Cpu {
         The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
     */
     private void _0xFx55(short opcode) {
-        System.out.println("Missing Implementation _0xFx55");
+        byte x = getX(opcode);
+        arraycopy(chip8.registers, 0, chip8.memory, chip8.I, x+1);
     }
 
     /*
