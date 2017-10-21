@@ -1,5 +1,7 @@
 package com.pbeder.chip8;
 
+import static java.lang.Byte.toUnsignedInt;
+
 class Cpu {
 
     private static final int INSTRUCTION_SIZE_IN_BYTES = 2;
@@ -10,7 +12,7 @@ class Cpu {
     }
 
     void handle(short opcode) {
-        chip8.pc+= INSTRUCTION_SIZE_IN_BYTES;
+        chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         switch (opcode & 0xF000) {
             case 0x0000:
                 _0(opcode);
@@ -112,9 +114,9 @@ class Cpu {
         byte y = getY(opcode);
         byte xx = chip8.registers[x];
         byte yy = chip8.registers[y];
-        final byte n = (byte) (opcode & 0xF);
+        byte n = getN(opcode);
         for (int i = 0; i < n; i++) {
-            final byte sprite = chip8.memory[chip8.I + i];
+            byte sprite = chip8.memory[chip8.I + i];
             chip8.writeSprite(xx, (byte) ((yy + i) % 32), sprite);
         }
     }
@@ -125,11 +127,8 @@ class Cpu {
         The interpreter generates a random number from 0 to 255, which is then ANDed with the value kk. The results are stored in Vx. See instruction 8xy2 for more information on AND.
     */
     private void _0xCxkk(short opcode) {
-        //TODO continue opcode refactor
-        byte x;
-        byte kk;
-        x = (byte) (opcode >> 8 & 0xF);
-        kk = (byte) (opcode & 0x00FF);
+        byte x = getX(opcode);
+        byte kk = getKK(opcode);
         final byte randomByte = chip8.getRandomByte();
         chip8.registers[x] = (byte) (randomByte & kk);
     }
@@ -140,7 +139,7 @@ class Cpu {
         The program counter is set to nnn plus the value of V0.
     */
     private void _0xBnnn(short opcode) {
-        short nnn = (short) (opcode & 0x0FFF);
+        byte nnn = getNNN(opcode);
         chip8.pc = (short) (nnn + chip8.registers[0]);
     }
 
@@ -150,7 +149,7 @@ class Cpu {
         The value of register I is set to nnn.
     */
     private void _0xAnnn(short opcode) {
-        chip8.I = (short) (opcode & 0x0FFF);
+        chip8.I = getNNN(opcode);
     }
 
 
@@ -160,12 +159,10 @@ class Cpu {
         The values of Vx and Vy are compared, and if they are not equal, the program counter is increased by 2.
     */
     private void _0x9xy0(short opcode) {
-        byte x;
-        byte y;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        y = ((byte) (opcode >>> 4 & 0xF));
+        byte x = getX(opcode);
+        byte y = getY(opcode);
         if (chip8.registers[x] != chip8.registers[y]) {
-            chip8.pc+= INSTRUCTION_SIZE_IN_BYTES;
+            chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
     }
 
@@ -175,8 +172,7 @@ class Cpu {
         If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
     */
     private void _0x8xyE(short opcode) {
-        byte x;
-        x = ((byte) (opcode >>> 8 & 0xF));
+        byte x = getX(opcode);
         final int msb = 0x80 & chip8.registers[x];
         chip8.setCarry(msb >>> 7 == 1);
         chip8.registers[x] = (byte) (chip8.registers[x] << 1);
@@ -188,13 +184,10 @@ class Cpu {
         If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
     */
     private void _0x8xy7(short opcode) {
-        byte x;
-        byte y;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        y = ((byte) (opcode >>> 4 & 0xF));
-        int sum = chip8.registers[y] - chip8.registers[x];
-        chip8.setCarry(Byte.toUnsignedInt(chip8.registers[y]) > Byte.toUnsignedInt(chip8.registers[x]));
-        chip8.registers[x] = (byte) sum;
+        byte x = getX(opcode);
+        byte y = getY(opcode);
+        chip8.setCarry(toUnsignedInt(chip8.registers[y]) > toUnsignedInt(chip8.registers[x]));
+        chip8.registers[x] = (byte) (chip8.registers[y] - chip8.registers[x]);
     }
 
     /*
@@ -203,9 +196,8 @@ class Cpu {
         If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
     */
     private void _0x8xy6(short opcode) {
-        byte x;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        final int lsb = 0x01 & chip8.registers[x];
+        byte x = getX(opcode);
+        final int lsb = 0x1 & chip8.registers[x];
         chip8.setCarry(lsb == 1);
         chip8.registers[x] = (byte) (chip8.registers[x] >>> 1);
     }
@@ -216,13 +208,10 @@ class Cpu {
         If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
     */
     private void _0x8xy5(short opcode) {
-        byte x;
-        byte y;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        y = ((byte) (opcode >>> 4 & 0xF));
-        int sum = chip8.registers[x] - chip8.registers[y];
-        chip8.setCarry(Byte.toUnsignedInt(chip8.registers[x]) > Byte.toUnsignedInt(chip8.registers[y]));
-        chip8.registers[x] = (byte) sum;
+        byte x = getX(opcode);
+        byte y = getY(opcode);
+        chip8.setCarry(toUnsignedInt(chip8.registers[x]) > toUnsignedInt(chip8.registers[y]));
+        chip8.registers[x] = (byte) (chip8.registers[x] - chip8.registers[y]);
     }
 
     /*
@@ -231,10 +220,8 @@ class Cpu {
         The values of Vx and Vy are added together. If the result is greater than 8 bits (i.e., > 255,) VF is set to 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.
     */
     private void _0x8xy4(short opcode) {
-        byte x;
-        byte y;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        y = ((byte) (opcode >>> 4 & 0xF));
+        byte x = getX(opcode);
+        byte y = getY(opcode);
         int sum = chip8.registers[x] + chip8.registers[y];
         chip8.setCarry(sum > 255);
         chip8.registers[x] = (byte) sum;
@@ -246,10 +233,8 @@ class Cpu {
         Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the result in Vx. An exclusive OR compares the corresponding bits from two values, and if the bits are not both the same, then the corresponding bit in the result is set to 1. Otherwise, it is 0.
     */
     private void _0x8xy3(short opcode) {
-        byte x;
-        byte y;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        y = ((byte) (opcode >>> 4 & 0xF));
+        byte x = getX(opcode);
+        byte y = getY(opcode);
         chip8.registers[x] = (byte) (chip8.registers[x] ^ chip8.registers[y]);
     }
 
@@ -259,10 +244,8 @@ class Cpu {
         Performs a bitwise AND on the values of Vx and Vy, then stores the result in Vx. A bitwise AND compares the corresponding bits from two values, and if both bits are 1, then the same bit in the result is also 1. Otherwise, it is 0.
     */
     private void _0x8xy2(short opcode) {
-        byte x;
-        byte y;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        y = ((byte) (opcode >>> 4 & 0xF));
+        byte x = getX(opcode);
+        byte y = getY(opcode);
         chip8.registers[x] = (byte) (chip8.registers[x] & chip8.registers[y]);
     }
 
@@ -272,10 +255,8 @@ class Cpu {
         Performs a bitwise OR on the values of Vx and Vy, then stores the result in Vx. A bitwise OR compares the corresponding bits from two values, and if either bit is 1, then the same bit in the result is also 1. Otherwise, it is 0.
     */
     private void _0x8xy1(short opcode) {
-        byte x;
-        byte y;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        y = ((byte) (opcode >>> 4 & 0xF));
+        byte x = getX(opcode);
+        byte y = getY(opcode);
         chip8.registers[x] = (byte) (chip8.registers[x] | chip8.registers[y]);
     }
 
@@ -285,10 +266,8 @@ class Cpu {
         Stores the value of register Vy in register Vx.
     */
     private void _0x8xy0(short opcode) {
-        byte x;
-        byte y;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        y = ((byte) (opcode >>> 4 & 0xF));
+        byte x = getX(opcode);
+        byte y = getY(opcode);
         chip8.registers[x] = chip8.registers[y];
     }
 
@@ -298,10 +277,8 @@ class Cpu {
         Adds the value kk to the value of register Vx, then stores the result in Vx.
     */
     private void _0x7xkk(short opcode) {
-        byte x;
-        byte kk;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        kk = (byte) (opcode & 0xFF);
+        byte x = getX(opcode);
+        byte kk = getKK(opcode);
         chip8.registers[x] += kk;
     }
 
@@ -311,10 +288,8 @@ class Cpu {
         The interpreter puts the value kk into register Vx.
     */
     private void _0x6xkk(short opcode) {
-        byte x;
-        byte kk;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        kk = (byte) (opcode & 0xFF);
+        byte x = getX(opcode);
+        byte kk = getKK(opcode);
         chip8.registers[x] = kk;
     }
 
@@ -324,9 +299,8 @@ class Cpu {
         The interpreter compares register Vx to register Vy, and if they are equal, increments the program counter by 2.
     */
     private void _0x5xy0(short opcode) {
-        byte x;
-        x = ((byte) (opcode >>> 8 & 0xF));
-        byte y = ((byte) (opcode >>> 4 & 0xF));
+        byte x = getX(opcode);
+        byte y = getY(opcode);
         if (chip8.registers[x] == chip8.registers[y]) {
             chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
@@ -338,12 +312,10 @@ class Cpu {
         The interpreter compares register Vx to kk, and if they are not equal, increments the program counter by 2.
     */
     private void _0x4xkk(short opcode) {
-        byte kk;
-        byte x;
-        kk = (byte) (opcode & 0xFF);
-        x = ((byte) (opcode >>> 8 & 0xF));
+        byte x = getX(opcode);
+        byte kk = getKK(opcode);
         if (chip8.registers[x] != kk) {
-            chip8.pc+= INSTRUCTION_SIZE_IN_BYTES;
+            chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
     }
 
@@ -353,8 +325,8 @@ class Cpu {
         The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
     */
     private void _0x3xkk(short opcode) {
-        byte kk = (byte) (opcode & 0xFF);
-        byte x = ((byte) (opcode >>> 8 & 0xF));
+        byte x = getX(opcode);
+        byte kk = getKK(opcode);
         if (chip8.registers[x] == kk) {
             chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
@@ -377,7 +349,7 @@ class Cpu {
         The interpreter sets the program counter to nnn.
     */
     private void _0x1nnn(short opcode) {
-        chip8.pc = (short) (opcode & 0x0FFF);
+        chip8.pc = getNNN(opcode);
     }
 
     /*
@@ -403,7 +375,7 @@ class Cpu {
         Clear the display.
     */
     private void _0x00E0() {
-        chip8.clearScreen = true;
+        chip8.clearScreen();
     }
 
     /*
@@ -430,6 +402,10 @@ class Cpu {
 
     private byte getNNN(short opcode) {
         return (byte) (opcode & 0xFFF);
+    }
+
+    private byte getN(short opcode) {
+        return (byte) (opcode & 0xF);
     }
 }
 //

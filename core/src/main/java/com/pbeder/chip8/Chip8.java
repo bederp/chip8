@@ -75,17 +75,25 @@ public class Chip8 {
         }
     }
 
-    private void step(short opcode) {
-        cpu.handle(opcode);
-    }
-
     public void fpsStep() {
         short opcode;
         do {
             opcode = getOpcode();
             step(opcode);
-            opcode = (short) (opcode & 0xF000);
-        } while ((opcode ^ 0xD000) != 0);
+        } while (notScreenDrawingOpcode(opcode));
+    }
+
+    private void step(short opcode) {
+        cpu.handle(opcode);
+    }
+
+    void clearScreen() {
+        screen.clear();
+    }
+
+    private boolean notScreenDrawingOpcode(short opcode) {
+        opcode = (short) (opcode & 0xF000);
+        return (opcode ^ 0xD000) != 0;
     }
 
     private short getOpcode() {

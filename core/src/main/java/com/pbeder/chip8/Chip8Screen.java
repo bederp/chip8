@@ -1,10 +1,13 @@
 package com.pbeder.chip8;
 
+import static com.pbeder.chip8.Chip8.SCREEN_HEIGHT;
+import static com.pbeder.chip8.Chip8.SCREEN_WIDTH;
+
 //The original implementation of the Chip-8 language used a 64x32-pixel monochrome display with this format:
 //        (0,0)     (63,0)
 //        (0,31)	(63,31)
 class Chip8Screen {
-    private boolean[][] screenConfiguration = new boolean[Chip8.SCREEN_HEIGHT][Chip8.SCREEN_WIDTH];
+    private boolean[][] screenConfiguration = new boolean[SCREEN_HEIGHT][SCREEN_WIDTH];
     private Chip8 chip8;
 
     Chip8Screen(Chip8 chip8) {
@@ -44,5 +47,13 @@ class Chip8Screen {
     void setPixel(byte x, byte y) {
         boolean[] line = screenConfiguration[y];
         line[x] = true;
+    }
+
+    void clear() {
+        for (int i = 0; i < SCREEN_HEIGHT; i++) {
+            for (int j = 0; j < SCREEN_WIDTH; j++) {
+                screenConfiguration[i][j] = false;
+            }
+        }
     }
 }
