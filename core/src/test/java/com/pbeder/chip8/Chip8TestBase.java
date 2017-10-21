@@ -72,6 +72,6 @@ public abstract class Chip8TestBase {
     }
 
     void assertScreenConfigurationIs(boolean[][] screenConfiguration) {
-        assertTrue(Arrays.deepEquals(chip8.getScreenConfiguration(), screenConfiguration));
+        assertTrue(Arrays.deepEquals(chip8.getScreen(), screenConfiguration));
     }
 }

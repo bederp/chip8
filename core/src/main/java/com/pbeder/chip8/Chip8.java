@@ -10,6 +10,8 @@ import static java.lang.System.arraycopy;
 
 public class Chip8 {
 
+    public static final int SCREEN_WIDTH = 64;
+    public static final int SCREEN_HEIGHT = 32;
     private static final int MEMORY_SIZE = 4096;
     private static final int NUMBER_OF_REGISTERS = 16;
     private static final int RECURSION_DEPTH = 16;
@@ -52,7 +54,7 @@ public class Chip8 {
         return randomGenerator.get();
     }
 
-    boolean[][] getScreenConfiguration() {
+    public boolean[][] getScreen() {
         return screen.getScreenConfiguration();
     }
 

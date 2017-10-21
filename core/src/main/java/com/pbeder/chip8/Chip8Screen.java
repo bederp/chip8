@@ -4,7 +4,7 @@ package com.pbeder.chip8;
 //        (0,0)     (63,0)
 //        (0,31)	(63,31)
 class Chip8Screen {
-    private boolean[][] screenConfiguration = new boolean[32][64];
+    private boolean[][] screenConfiguration = new boolean[Chip8.SCREEN_HEIGHT][Chip8.SCREEN_WIDTH];
     private Chip8 chip8;
 
     Chip8Screen(Chip8 chip8) {
