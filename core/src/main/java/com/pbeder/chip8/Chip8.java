@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.function.Supplier;
 
-import static  com.pbeder.chip8.Fonts.*;
+import static com.pbeder.chip8.Fonts.*;
 import static java.lang.System.arraycopy;
 
 public class Chip8 {
@@ -17,11 +17,6 @@ public class Chip8 {
     private static final int RECURSION_DEPTH = 16;
     private static final int DEFAULT_PROGRAM_LOCATION = 0x200;
     public volatile boolean RUN_VM = true;
-
-    private Cpu cpu = new Cpu(this);
-    private Supplier<Byte> randomGenerator;
-    private Chip8Screen screen;
-
     byte[] memory = new byte[MEMORY_SIZE];
     byte[] registers = new byte[NUMBER_OF_REGISTERS]; // Also called V(0-F)
     short I;
@@ -29,6 +24,9 @@ public class Chip8 {
     byte stackPointer;
     short[] stack = new short[RECURSION_DEPTH];
     boolean clearScreen;
+    private Cpu cpu = new Cpu(this);
+    private Supplier<Byte> randomGenerator;
+    private Chip8Screen screen;
     private byte delayTimer;
     private byte soundTimer;
 
@@ -77,12 +75,20 @@ public class Chip8 {
         }
     }
 
-    public void step() {
-        short opcode = getOpcode();
+    private void step(short opcode) {
         cpu.handle(opcode);
     }
 
+    public void fpsStep() {
+        short opcode;
+        do {
+            opcode = getOpcode();
+            step(opcode);
+            opcode = (short) (opcode & 0xF000);
+        } while ((opcode ^ 0xD000) != 0);
+    }
+
     private short getOpcode() {
-        return (short) (memory[pc] << 8 | memory[pc+1] & 0xFF);
+        return (short) (memory[pc] << 8 | memory[pc + 1] & 0xFF);
     }
 }
