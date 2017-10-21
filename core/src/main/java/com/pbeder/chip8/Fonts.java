@@ -1,9 +1,8 @@
 package com.pbeder.chip8;
 
 class Fonts {
-    private static final int FONT_WIDTH = 8; // stored in 1 byte
-    static final int FONT_HEIGHT = 5;
-    static final int NUMBER_OF_FONTS = 16;
+    static final short FONT_HEIGHT = 5;
+    static final short NUMBER_OF_FONTS = 16;
 
     static final byte[] FONTS = {
             (byte) 0xF0, (byte) 0x90, (byte) 0x90, (byte) 0x90, (byte) 0xF0, // 0

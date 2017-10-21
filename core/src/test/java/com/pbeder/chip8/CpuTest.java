@@ -3,6 +3,7 @@ package com.pbeder.chip8;
 import org.junit.Test;
 
 import static com.pbeder.chip8.Cpu.INSTRUCTION_SIZE_IN_BYTES;
+import static com.pbeder.chip8.Fonts.FONT_HEIGHT;
 import static org.junit.Assert.assertArrayEquals;
 
 public class CpuTest extends Chip8TestBase {
@@ -691,15 +692,43 @@ public class CpuTest extends Chip8TestBase {
     }
 
     // EX9E	Skips the next instruction if the key stored in VX is pressed.
-
     // EXA1	Skips the next instruction if the key stored in VX isn't pressed.
-
     // FX07	Sets VX to the value of the delay timer.
     // FX0A	A key press is awaited, and then stored in VX.
     // FX15	Sets the delay timer to VX.
     // FX18	Sets the sound timer to VX.
+
     // FX1E	Adds VX to I.[3]
+    @Test
+    public void shouldSumVxAndI() throws Exception {
+        //Given
+        byte x = 5;
+        byte vx = 0xA;
+        short opCode = (short) 0xF51E;
+        final short someMemoryAddress = 0x0ABC;
+        chip8.I = someMemoryAddress;
+        chip8.registers[x] = vx;
+        //When
+        chip8.handleOpcode(opCode);
+        //Then
+        assertIIsEqualTo(someMemoryAddress + vx);
+    }
+
     // FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
+
+    @Test
+    public void shouldSetIToFont6Place() throws Exception {
+        //Given
+        byte x = 7;
+        byte six = 6;
+        short opCode = (short) 0xF729;
+        chip8.registers[x] = six;
+        //When
+        chip8.handleOpcode(opCode);
+        //Then
+        assertIIsEqualTo(six * FONT_HEIGHT );
+    }
+
     // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
     // FX55	Stores V0 to VX (including VX) in memory starting at address I.[4]
     // FX65	Fills V0 to VX (including VX) with values from memory starting at address I.[4]

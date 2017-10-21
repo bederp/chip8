@@ -1,5 +1,6 @@
 package com.pbeder.chip8;
 
+import static com.pbeder.chip8.Fonts.FONT_HEIGHT;
 import static java.lang.Byte.toUnsignedInt;
 
 class Cpu {
@@ -55,6 +56,55 @@ class Cpu {
                 break;
             case 0xD000:
                 _0xDxyn(opcode);
+                break;
+            case 0xE000:
+                _E(opcode);
+                break;
+            case 0xF000:
+                _F(opcode);
+                break;
+        }
+    }
+
+    private void _F(short opcode) {
+        switch (opcode & 0x00FF) {
+            case 0x0007:
+                _0xFx07(opcode);
+                break;
+            case 0x000A:
+                _0xFx0A(opcode);
+                break;
+            case 0x0015:
+                _0xFx15(opcode);
+                break;
+            case 0x0018:
+                _0xFx18(opcode);
+                break;
+            case 0x001E:
+                _0xFx1E(opcode);
+                break;
+            case 0x0029:
+                _0xFx29(opcode);
+                break;
+            case 0x0033:
+                _0xFx33(opcode);
+                break;
+            case 0x0055:
+                _0xFx55(opcode);
+                break;
+            case 0x0065:
+                _0xFx65(opcode);
+                break;
+        }
+    }
+
+    private void _E(short opcode) {
+        switch (opcode & 0x00FF) {
+            case 0x009E:
+                _0xEx9E(opcode);
+                break;
+            case 0x00A1:
+                _0xExA1(opcode);
                 break;
         }
     }
@@ -383,8 +433,100 @@ class Cpu {
         Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
     */
     private void _0xEx9E(short opcode) {
-        //TODO IMPLEMENTATION
+        System.out.println("Missing Implementation _0xEx9E");
+    }
+
+    /*
+        ExA1 - SKNP Vx
+        Skip next instruction if key with the value of Vx is not pressed.
+        Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
+     */
+    private void _0xExA1(short opcode) {
+        System.out.println("Missing Implementation _0xExA1");
+    }
+
+    /*
+        Fx07 - LD Vx, DT
+        Set Vx = delay timer value.
+        The value of DT is placed into Vx.
+    */
+    private void _0xFx07(short opcode) {
+        System.out.println("Missing Implementation _0xFx07");
+    }
+
+    /*
+        Fx0A - LD Vx, K
+        Wait for a key press, store the value of the key in Vx.
+        All execution stops until a key is pressed, then the value of that key is stored in Vx.
+    */
+    private void _0xFx0A(short opcode) {
+        System.out.println("Missing Implementation _0xFx0A");
+    }
+
+    /*
+        Fx15 - LD DT, Vx
+        Set delay timer = Vx.
+        DT is set equal to the value of Vx.
+    */
+    private void _0xFx15(short opcode) {
+        System.out.println("Missing Implementation _0xFx15");
+    }
+
+    /*
+        Fx18 - LD ST, Vx
+        Set sound timer = Vx.
+        ST is set equal to the value of Vx.
+    */
+    private void _0xFx18(short opcode) {
+        System.out.println("Missing Implementation _0xFx18");
+    }
+
+    /*
+        Fx1E - ADD I, Vx
+        Set I = I + Vx.
+        The values of I and Vx are added, and the results are stored in I.
+    */
+    private void _0xFx1E(short opcode) {
         byte x = getX(opcode);
+        chip8.I = (short) (chip8.registers[x] + chip8.I);
+    }
+
+    /*
+        Fx29 - LD F, Vx
+        Set I = location of sprite for digit Vx.
+        The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx. See section 2.4, Display, for more information on the Chip-8 hexadecimal font.
+    */
+    private void _0xFx29(short opcode) {
+        byte x = getX(opcode);
+        byte vx = chip8.registers[x];
+        chip8.I = (short) (vx * FONT_HEIGHT);
+    }
+
+    /*
+        Fx33 - LD B, Vx
+        Store BCD representation of Vx in memory locations I, I+1, and I+2.
+        The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.
+    */
+    private void _0xFx33(short opcode) {
+        System.out.println("Missing Implementation _0xFx33");
+    }
+
+    /*
+        Fx55 - LD [I], Vx
+        Store registers V0 through Vx in memory starting at location I.
+        The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
+    */
+    private void _0xFx55(short opcode) {
+        System.out.println("Missing Implementation _0xFx55");
+    }
+
+    /*
+        Fx65 - LD Vx, [I]
+        Read registers V0 through Vx from memory starting at location I.
+        The interpreter reads values from memory starting at location I into registers V0 through Vx.
+    */
+    private void _0xFx65(short opcode) {
+        System.out.println("Missing Implementation _0xFx65");
     }
 
     private byte getX(short opcode) {
@@ -407,64 +549,3 @@ class Cpu {
         return (byte) (opcode & 0xF);
     }
 }
-//
-//
-//        ExA1 - SKNP Vx
-//        Skip next instruction if key with the value of Vx is not pressed.
-//
-//        Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
-//
-//
-//        Fx07 - LD Vx, DT
-//        Set Vx = delay timer value.
-//
-//        The value of DT is placed into Vx.
-//
-//
-//        Fx0A - LD Vx, K
-//        Wait for a key press, store the value of the key in Vx.
-//
-//        All execution stops until a key is pressed, then the value of that key is stored in Vx.
-//
-//
-//        Fx15 - LD DT, Vx
-//        Set delay timer = Vx.
-//
-//        DT is set equal to the value of Vx.
-//
-//
-//        Fx18 - LD ST, Vx
-//        Set sound timer = Vx.
-//
-//        ST is set equal to the value of Vx.
-//
-//
-//        Fx1E - ADD I, Vx
-//        Set I = I + Vx.
-//
-//        The values of I and Vx are added, and the results are stored in I.
-//
-//
-//        Fx29 - LD F, Vx
-//        Set I = location of sprite for digit Vx.
-//
-//        The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx. See section 2.4, Display, for more information on the Chip-8 hexadecimal font.
-//
-//
-//        Fx33 - LD B, Vx
-//        Store BCD representation of Vx in memory locations I, I+1, and I+2.
-//
-//        The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.
-//
-//
-//        Fx55 - LD [I], Vx
-//        Store registers V0 through Vx in memory starting at location I.
-//
-//
-//        The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
-//
-//        Fx65 - LD Vx, [I]
-//        Read registers V0 through Vx from memory starting at location I.
-//
-//        The interpreter reads values from memory starting at location I into registers V0 through Vx.
-//

@@ -82,6 +82,10 @@ public class Chip8 {
         } while (notScreenDrawingOpcode(opcode));
     }
 
+    public void step() {
+        handleOpcode(getOpcode());
+    }
+
     void clearScreen() {
         screen.clear();
     }
