@@ -2,7 +2,8 @@ package com.pbeder.chip8;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static com.pbeder.chip8.Cpu.INSTRUCTION_SIZE_IN_BYTES;
+import static org.junit.Assert.assertArrayEquals;
 
 public class CpuTest extends Chip8TestBase {
 
@@ -15,11 +16,13 @@ public class CpuTest extends Chip8TestBase {
     // 00E0	Clears the screen.
     @Test
     public void shouldSetClearScreenFlagOn_00E0() {
+        // Given
+        chip8.setPixel((byte) 0, (byte) 0);
         // When
         chip8.handleOpcode((short) 0x00E0);
 
         // Then
-        assertTrue(chip8.clearScreen);
+        assertArrayEquals(chip8.getScreen(), new boolean[32][64]);
     }
 
     // 00EE	Returns from a subroutine.
@@ -61,7 +64,7 @@ public class CpuTest extends Chip8TestBase {
         chip8.handleOpcode(opCodeWithJumpAddress);
         //Then
         assertStackPointerIs(++previousStackPointer);
-        assertTopStackIs(previousPC + 1);
+        assertTopStackIs(previousPC + INSTRUCTION_SIZE_IN_BYTES);
         assertProgramCounterIs(opCodeWithJumpAddress);
     }
 
@@ -79,7 +82,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertProgramCounterIs(pc + 2);
+        assertProgramCounterIs(pc + 2 * INSTRUCTION_SIZE_IN_BYTES);
     }
 
     // 3XNN	Skips the next instruction if VX equals NN.
@@ -96,7 +99,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(instruction);
         //Then
-        assertProgramCounterIs(pc + 1);
+        assertProgramCounterIs(pc + INSTRUCTION_SIZE_IN_BYTES);
     }
 
     // 4XNN	Skips the next instruction if VX doesn't equal NN.
@@ -113,7 +116,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(instruction);
         //Then
-        assertProgramCounterIs(pc + 2);
+        assertProgramCounterIs(pc + 2 * INSTRUCTION_SIZE_IN_BYTES);
     }
 
     // 4XNN	Skips the next instruction if VX equals NN.
@@ -130,7 +133,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(instruction);
         //Then
-        assertProgramCounterIs(pc + 1);
+        assertProgramCounterIs(pc + INSTRUCTION_SIZE_IN_BYTES);
     }
 
     // 5XY0	Skips the next instruction if VX equals VY.
@@ -149,7 +152,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(instruction);
         //Then
-        assertProgramCounterIs(pc + 2);
+        assertProgramCounterIs(pc + 2 * INSTRUCTION_SIZE_IN_BYTES);
     }
 
     // 5XY0	Skips the next instruction if VX equals VY.
@@ -169,7 +172,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertProgramCounterIs(pc + 1);
+        assertProgramCounterIs(pc + INSTRUCTION_SIZE_IN_BYTES);
     }
 
     // 6XNN	Sets VX to NN.
@@ -495,7 +498,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertProgramCounterIs(pc + 2);
+        assertProgramCounterIs(pc + 2 * INSTRUCTION_SIZE_IN_BYTES);
     }
 
     // 9XY0	Skips the next instruction if VX doesn't equal VY.
@@ -513,7 +516,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertProgramCounterIs(pc + 1);
+        assertProgramCounterIs(pc + INSTRUCTION_SIZE_IN_BYTES);
     }
 
     // ANNN	Sets I to the address NNN.

@@ -4,7 +4,7 @@ import static java.lang.Byte.toUnsignedInt;
 
 class Cpu {
 
-    private static final int INSTRUCTION_SIZE_IN_BYTES = 2;
+    static final int INSTRUCTION_SIZE_IN_BYTES = 2;
     private final Chip8 chip8;
 
     Cpu(Chip8 chip8) {
@@ -139,7 +139,7 @@ class Cpu {
         The program counter is set to nnn plus the value of V0.
     */
     private void _0xBnnn(short opcode) {
-        byte nnn = getNNN(opcode);
+        short nnn = getNNN(opcode);
         chip8.pc = (short) (nnn + chip8.registers[0]);
     }
 
@@ -338,7 +338,6 @@ class Cpu {
         The interpreter increments the stack pointer, then puts the current PC on the top of the stack. The PC is then set to nnn.
     */
     private void _0x2nnn(short opcode) {
-        chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         chip8.stack[chip8.stackPointer++] = chip8.pc;
         chip8.pc = (short) (opcode & 0x0FFF);
     }
@@ -400,8 +399,8 @@ class Cpu {
         return (byte) (opcode & 0xFF);
     }
 
-    private byte getNNN(short opcode) {
-        return (byte) (opcode & 0xFFF);
+    private short getNNN(short opcode) {
+        return (short) (opcode & 0xFFF);
     }
 
     private byte getN(short opcode) {

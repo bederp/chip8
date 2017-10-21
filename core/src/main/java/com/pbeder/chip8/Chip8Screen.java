@@ -45,8 +45,7 @@ class Chip8Screen {
     }
 
     void setPixel(byte x, byte y) {
-        boolean[] line = screenConfiguration[y];
-        line[x] = true;
+        screenConfiguration[y][x] = true;
     }
 
     void clear() {

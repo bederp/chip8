@@ -16,7 +16,6 @@ public class Chip8 {
     private static final int NUMBER_OF_REGISTERS = 16;
     private static final int RECURSION_DEPTH = 16;
     private static final int DEFAULT_PROGRAM_LOCATION = 0x200;
-    public volatile boolean RUN_VM = true;
     byte[] memory = new byte[MEMORY_SIZE];
     byte[] registers = new byte[NUMBER_OF_REGISTERS]; // Also called V(0-F)
     short I;
@@ -79,12 +78,8 @@ public class Chip8 {
         short opcode;
         do {
             opcode = getOpcode();
-            step(opcode);
+            handleOpcode(opcode);
         } while (notScreenDrawingOpcode(opcode));
-    }
-
-    private void step(short opcode) {
-        cpu.handle(opcode);
     }
 
     void clearScreen() {
