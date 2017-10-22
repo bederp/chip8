@@ -467,7 +467,14 @@ class Cpu {
         All execution stops until a key is pressed, then the value of that key is stored in Vx.
     */
     private void _0xFx0A(short opcode) {
-        System.out.println("Missing Implementation _0xFx0A");
+        if (!chip8.isAnyKeyPressed()) {
+            //Repeat same opCode in next Cycle
+            chip8.pc -= INSTRUCTION_SIZE_IN_BYTES;
+        } else {
+            byte key = chip8.getFirstKeyPressed();
+            byte x = getX(opcode);
+            chip8.registers[x] = key;
+        }
     }
 
     /*

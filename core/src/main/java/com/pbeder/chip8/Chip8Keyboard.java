@@ -14,6 +14,24 @@ class Chip8Keyboard {
         return keyboard[x];
     }
 
+    byte getFirstKeyPressed() {
+        for (int i = 0; i < keyboard.length; i++) {
+            if (keyboard[i]) {
+                return (byte) i;
+            }
+        }
+        return (byte) 0x10;
+    }
+
+    boolean isAnyKeyPressed() {
+        for (boolean key : keyboard) {
+            if (key) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void setKey(byte key, boolean isPressed) {
         keyboard[key] = isPressed;
     }

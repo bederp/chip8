@@ -95,6 +95,13 @@ public class Chip8 {
         return keyboard.isKeyPressed(x);
     }
 
+    byte getFirstKeyPressed() {
+        return keyboard.getFirstKeyPressed();
+    }
+    boolean isAnyKeyPressed() {
+        return keyboard.isAnyKeyPressed();
+    }
+
     public void setKey(byte key, boolean isPressed) {
         keyboard.setKey(key, isPressed);
     }
