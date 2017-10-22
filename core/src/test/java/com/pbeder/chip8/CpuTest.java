@@ -725,7 +725,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertIIs(six * FONT_HEIGHT );
+        assertIIs(six * FONT_HEIGHT);
     }
 
     // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
@@ -750,12 +750,35 @@ public class CpuTest extends Chip8TestBase {
         chip8.handleOpcode(opcode);
         //Then
         assertMemoryIs(chip8.I, v0);
-        assertMemoryIs((short) (chip8.I+1), v1);
-        assertMemoryIs((short) (chip8.I+2), v2);
-        assertMemoryIs((short) (chip8.I+3), v3);
-        assertMemoryIs((short) (chip8.I+4), v4);
+        assertMemoryIs((short) (chip8.I + 1), v1);
+        assertMemoryIs((short) (chip8.I + 2), v2);
+        assertMemoryIs((short) (chip8.I + 3), v3);
+        assertMemoryIs((short) (chip8.I + 4), v4);
     }
 
     // FX65	Fills V0 to VX (including VX) with values from memory starting at address I.[4]
-
+    @Test
+    public void shouldFromMemoryToRegisters() throws Exception {
+        //Given
+        byte v0 = 0xA;
+        byte v1 = 0x7;
+        byte v2 = 0xF;
+        byte v3 = 0x0;
+        byte v4 = 0xB;
+        chip8.I = 0x200;
+        chip8.memory[chip8.I] = v0;
+        chip8.memory[chip8.I + 1] = v1;
+        chip8.memory[chip8.I + 2] = v2;
+        chip8.memory[chip8.I + 3] = v3;
+        chip8.memory[chip8.I + 4] = v4;
+        short opcode = (short) 0xF465;
+        //When
+        chip8.handleOpcode(opcode);
+        //Then
+        assertThatRegisterXIs((byte) 0, v0);
+        assertThatRegisterXIs((byte) 1, v1);
+        assertThatRegisterXIs((byte) 2, v2);
+        assertThatRegisterXIs((byte) 3, v3);
+        assertThatRegisterXIs((byte) 4, v4);
+    }
 }

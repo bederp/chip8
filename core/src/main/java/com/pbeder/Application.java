@@ -36,6 +36,7 @@ public class Application extends ApplicationAdapter {
         app.log(LOG, "Creating game");
         fps = new FPSLogger();
         OrthographicCamera camera = new OrthographicCamera();
+        camera.setToOrtho(true);
         viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         viewport.apply(true);
         shapeRenderer = new ShapeRenderer();

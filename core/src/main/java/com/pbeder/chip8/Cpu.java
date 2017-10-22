@@ -528,7 +528,8 @@ class Cpu {
         The interpreter reads values from memory starting at location I into registers V0 through Vx.
     */
     private void _0xFx65(short opcode) {
-        System.out.println("Missing Implementation _0xFx65");
+        byte x = getX(opcode);
+        arraycopy(chip8.memory, chip8.I, chip8.registers, 0, x+1);
     }
 
     private byte getX(short opcode) {
