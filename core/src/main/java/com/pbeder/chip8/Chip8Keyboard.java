@@ -10,17 +10,23 @@ class Chip8Keyboard {
     private boolean[] keyboard = new boolean[16];
 
     boolean isKeyPressed(byte x) {
-//        System.out.println(Arrays.toString(keyboard));
         return keyboard[x];
     }
 
     byte getFirstKeyPressed() {
         for (int i = 0; i < keyboard.length; i++) {
             if (keyboard[i]) {
+                clear();
                 return (byte) i;
             }
         }
         return (byte) 0x10;
+    }
+
+    private void clear() {
+        for (int i = 0; i < keyboard.length; i++) {
+            keyboard[i] = false;
+        }
     }
 
     boolean isAnyKeyPressed() {
