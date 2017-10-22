@@ -729,6 +729,64 @@ public class CpuTest extends Chip8TestBase {
     }
 
     // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
+    @Test
+    public void shouldConvert247InVxToBCD() throws Exception {
+        //Given
+        short opCode = (short) 0xF333;
+        chip8.I = 0x200;
+        chip8.registers[3] = (byte) 247;
+        //When
+        chip8.handleOpcode(opCode);
+        //Then
+        assertMemoryIs((short) 0x200, (byte) 0x2);
+        assertMemoryIs((short) 0x201, (byte) 0x4);
+        assertMemoryIs((short) 0x202, (byte) 0x7);
+    }
+
+    // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
+    @Test
+    public void shouldConvert255InVxToBCD() throws Exception {
+        //Given
+        short opCode = (short) 0xF333;
+        chip8.I = 0x200;
+        chip8.registers[3] = (byte) 255;
+        //When
+        chip8.handleOpcode(opCode);
+        //Then
+        assertMemoryIs((short) 0x200, (byte) 0x2);
+        assertMemoryIs((short) 0x201, (byte) 0x5);
+        assertMemoryIs((short) 0x202, (byte) 0x5);
+    }
+
+    // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
+    @Test
+    public void shouldConvert0InVxToBCD() throws Exception {
+        //Given
+        short opCode = (short) 0xF333;
+        chip8.I = 0x200;
+        chip8.registers[3] = (byte) 0;
+        //When
+        chip8.handleOpcode(opCode);
+        //Then
+        assertMemoryIs((short) 0x200, (byte) 0x0);
+        assertMemoryIs((short) 0x201, (byte) 0x0);
+        assertMemoryIs((short) 0x202, (byte) 0x0);
+    }
+
+    // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
+    @Test
+    public void shouldConvert9InVxToBCD() throws Exception {
+        //Given
+        short opCode = (short) 0xF333;
+        chip8.I = 0x200;
+        chip8.registers[3] = (byte) 9;
+        //When
+        chip8.handleOpcode(opCode);
+        //Then
+        assertMemoryIs((short) 0x200, (byte) 0x0);
+        assertMemoryIs((short) 0x201, (byte) 0x0);
+        assertMemoryIs((short) 0x202, (byte) 0x9);
+    }
 
     // FX55	Stores V0 to VX (including VX) in memory starting at address I.[4]
     @Test

@@ -436,7 +436,7 @@ class Cpu {
     private void _0xEx9E(short opcode) {
         byte x = getX(opcode);
         if (chip8.isKeyPressed(x)) {
-            chip8.pc+=INSTRUCTION_SIZE_IN_BYTES;
+            chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
     }
 
@@ -448,7 +448,7 @@ class Cpu {
     private void _0xExA1(short opcode) {
         byte x = getX(opcode);
         if (!chip8.isKeyPressed(x)) {
-            chip8.pc+=INSTRUCTION_SIZE_IN_BYTES;
+            chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
     }
 
@@ -522,7 +522,11 @@ class Cpu {
         The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.
     */
     private void _0xFx33(short opcode) {
-        System.out.println("Missing Implementation _0xFx33");
+        byte x = getX(opcode);
+        byte bcd = chip8.registers[x];
+        chip8.memory[chip8.I] = (byte) (toUnsignedInt(bcd) / 100);
+        chip8.memory[chip8.I + 1] = (byte) (toUnsignedInt(bcd) % 100 / 10);
+        chip8.memory[chip8.I + 2] = (byte) (toUnsignedInt(bcd) % 10);
     }
 
     /*
@@ -532,7 +536,7 @@ class Cpu {
     */
     private void _0xFx55(short opcode) {
         byte x = getX(opcode);
-        arraycopy(chip8.registers, 0, chip8.memory, chip8.I, x+1);
+        arraycopy(chip8.registers, 0, chip8.memory, chip8.I, x + 1);
     }
 
     /*
@@ -542,7 +546,7 @@ class Cpu {
     */
     private void _0xFx65(short opcode) {
         byte x = getX(opcode);
-        arraycopy(chip8.memory, chip8.I, chip8.registers, 0, x+1);
+        arraycopy(chip8.memory, chip8.I, chip8.registers, 0, x + 1);
     }
 
     private byte getX(short opcode) {
