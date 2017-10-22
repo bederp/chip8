@@ -434,7 +434,10 @@ class Cpu {
         Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
     */
     private void _0xEx9E(short opcode) {
-        System.out.println("Missing Implementation _0xEx9E");
+        byte x = getX(opcode);
+        if (chip8.isKeyPressed(x)) {
+            chip8.pc+=INSTRUCTION_SIZE_IN_BYTES;
+        }
     }
 
     /*
@@ -443,7 +446,10 @@ class Cpu {
         Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
      */
     private void _0xExA1(short opcode) {
-        System.out.println("Missing Implementation _0xExA1");
+        byte x = getX(opcode);
+        if (!chip8.isKeyPressed(x)) {
+            chip8.pc+=INSTRUCTION_SIZE_IN_BYTES;
+        }
     }
 
     /*

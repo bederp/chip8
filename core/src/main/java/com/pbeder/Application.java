@@ -20,6 +20,7 @@ public class Application extends ApplicationAdapter {
     public static final int WORLD_HEIGHT = Chip8.SCREEN_HEIGHT;
     private static final String LOG = Application.class.getSimpleName();
     private Chip8 chip8;
+    private InputProcessor keyboard;
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
     private FPSLogger fps;
@@ -28,6 +29,7 @@ public class Application extends ApplicationAdapter {
         chip8 = new Chip8();
         File file = new File(path);
         chip8.loadFromFile(file);
+        keyboard = new InputProcessor(chip8);
     }
 
 
@@ -35,6 +37,7 @@ public class Application extends ApplicationAdapter {
     public void create() {
         app.log(LOG, "Creating game");
         fps = new FPSLogger();
+        Gdx.input.setInputProcessor(keyboard);
         OrthographicCamera camera = new OrthographicCamera();
         camera.setToOrtho(true);
         viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -51,6 +54,19 @@ public class Application extends ApplicationAdapter {
         fps.log();
     }
 
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+        super.render();
+    }
+
+
+
+    @Override
+    public void dispose() {
+        app.log(LOG, "Disposing game");
+    }
+
     private void draw(boolean[][] screen) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.begin(Filled);
@@ -62,16 +78,5 @@ public class Application extends ApplicationAdapter {
             }
         }
         shapeRenderer.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
-        super.render();
-    }
-
-    @Override
-    public void dispose() {
-        app.log(LOG, "Disposing game");
     }
 }

@@ -25,6 +25,7 @@ public class Chip8 {
     private Cpu cpu = new Cpu(this);
     private Supplier<Byte> randomGenerator;
     private Chip8Screen screen;
+    private Chip8Keyboard keyboard;
     private byte delayTimer;
     private byte soundTimer;
 
@@ -32,6 +33,7 @@ public class Chip8 {
         arraycopy(FONTS, 0, memory, 0, NUMBER_OF_FONTS * FONT_HEIGHT);
         randomGenerator = new RandomByteSupplier();
         screen = new Chip8Screen(this);
+        keyboard = new Chip8Keyboard();
     }
 
     void setRandomGenerator(Supplier<Byte> randomGenerator) {
@@ -87,6 +89,14 @@ public class Chip8 {
 
     void clearScreen() {
         screen.clear();
+    }
+
+    boolean isKeyPressed(byte x) {
+        return keyboard.isKeyPressed(x);
+    }
+
+    public void setKey(byte key, boolean isPressed) {
+        keyboard.setKey(key, isPressed);
     }
 
     private boolean notScreenDrawingOpcode(short opcode) {

@@ -6,6 +6,15 @@ package com.pbeder.chip8;
  | 7 | 8 | 9 | E |
  | A | 0 | B | F |
 */
-public class Chip8Keyboard {
+class Chip8Keyboard {
+    private boolean[] keyboard = new boolean[16];
 
+    boolean isKeyPressed(byte x) {
+//        System.out.println(Arrays.toString(keyboard));
+        return keyboard[x];
+    }
+
+    void setKey(byte key, boolean isPressed) {
+        keyboard[key] = isPressed;
+    }
 }
