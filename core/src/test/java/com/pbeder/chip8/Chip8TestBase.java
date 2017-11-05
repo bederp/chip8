@@ -16,7 +16,11 @@ public abstract class Chip8TestBase {
 
     @Before
     public void setUp() {
-        chip8 = new Chip8();
+        chip8 = new Chip8(dummyBeeper());
+    }
+
+    private Chip8Beeper dummyBeeper() {
+        return () -> {};
     }
 
     void assertProgramCounterIs(int previousFrameAddress) {

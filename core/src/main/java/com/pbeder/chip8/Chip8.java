@@ -22,8 +22,8 @@ public class Chip8 {
     short pc;
     byte stackPointer;
     short[] stack = new short[RECURSION_DEPTH];
-    short delayTimer; // short instead of byte to avoid signed/unsigned problems in java
-    short soundTimer; // same as above
+    short delayTimer = -1;
+    short soundTimer = -1;
     private Cpu cpu = new Cpu(this);
     private Supplier<Byte> randomGenerator;
     private Chip8Screen screen;
@@ -58,7 +58,7 @@ public class Chip8 {
         return screen.getScreen();
     }
 
-    void writeSprite(byte x, byte y, byte sprite) {
+    void drawByte(byte x, byte y, byte sprite) {
         screen.writeSprite(x, y, sprite);
     }
 
@@ -83,9 +83,20 @@ public class Chip8 {
         short opcode;
         do {
             opcode = getOpcode();
-//            System.out.println("Opcode: " + Integer.toHexString(Short.toUnsignedInt(opcode)));
+            System.out.println("Opcode: " + Integer.toHexString(Short.toUnsignedInt(opcode)));
             handleOpcode(opcode);
         } while (notScreenDrawingOpcode(opcode));
+        System.out.println("GOT OUT!");
+    }
+
+    public void step14() {
+        decrementDelayTimer();
+        decrementSoundTimer();
+        short opcode;
+        for (int i = 0; i < 14 ; i++) {
+            opcode = getOpcode();
+            handleOpcode(opcode);
+        }
     }
 
     private void decrementSoundTimer() {
@@ -128,10 +139,12 @@ public class Chip8 {
     }
 
     private boolean notScreenDrawingOpcode(short opcode) {
-        return (byte) (opcode >>> 3) == 0xD;
+        return (Short.toUnsignedInt(opcode) >>> 3 * 4) != 0xD;
+//        return (byte) (opcode >>> 3) == 0xD;
     }
 
     private short getOpcode() {
+//        return (short) (toUnsignedInt(memory[pc]) << 8 | toUnsignedInt(memory[pc + 1]));
         return (short) (memory[pc] << 8 | memory[pc + 1] & 0xFF);
     }
 }

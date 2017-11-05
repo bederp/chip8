@@ -21,7 +21,6 @@ public class Application extends ApplicationAdapter {
     public static final int WORLD_HEIGHT = Chip8.SCREEN_HEIGHT;
     private static final String LOG = Application.class.getSimpleName();
     private Chip8 chip8;
-    private InputProcessor keyboard;
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
     private FPSLogger fps;
@@ -35,10 +34,21 @@ public class Application extends ApplicationAdapter {
 
     @Override
     public void create() {
-        chip8();
         app.log(LOG, "Creating game");
         fps = new FPSLogger();
+        chip8();
+        camera();
+    }
+
+    private void chip8() {
+        Sound sound = Gdx.audio.newSound(Gdx.files.internal("core/out/production/resources/sounds/beep.wav"));
+        chip8 = new Chip8(sound::play);
+        chip8.loadFromFile(file);
+        InputProcessor keyboard = new InputProcessor(chip8);
         Gdx.input.setInputProcessor(keyboard);
+    }
+
+    private void camera() {
         OrthographicCamera camera = new OrthographicCamera();
         camera.setToOrtho(true);
         viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -47,16 +57,10 @@ public class Application extends ApplicationAdapter {
         shapeRenderer.setProjectionMatrix(camera.combined);
     }
 
-    private void chip8() {
-        Sound sound = Gdx.audio.newSound(Gdx.files.internal("core/out/production/resources/sounds/beep.wav"));
-        chip8 = new Chip8(sound::play);
-        chip8.loadFromFile(file);
-        keyboard = new InputProcessor(chip8);
-    }
-
     @Override
     public void render() {
-        chip8.fpsStep();
+//        chip8.fpsStep();
+        chip8.step14();
         draw(chip8.getScreen());
         fps.log();
     }

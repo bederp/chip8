@@ -169,7 +169,7 @@ class Cpu {
         for (int i = 0; i < n; i++) {
             byte sprite = chip8.memory[chip8.I + i];
             byte yyy = (byte) ((toUnsignedInt(yy) + i) % 32);
-            chip8.writeSprite(xx, yyy, sprite);
+            chip8.drawByte(xx, yyy, sprite);
         }
     }
 
@@ -192,7 +192,7 @@ class Cpu {
     */
     private void _0xBnnn(short opcode) {
         short nnn = getNNN(opcode);
-        chip8.pc = (short) (nnn + chip8.registers[0]);
+        chip8.pc = (short) (Short.toUnsignedInt(nnn) + toUnsignedInt(chip8.registers[0]));
     }
 
     /*
@@ -239,7 +239,7 @@ class Cpu {
         byte x = getX(opcode);
         byte y = getY(opcode);
         chip8.setCarry(toUnsignedInt(chip8.registers[y]) > toUnsignedInt(chip8.registers[x]));
-        chip8.registers[x] = (byte) (chip8.registers[y] - chip8.registers[x]);
+        chip8.registers[x] = (byte) (toUnsignedInt(chip8.registers[y]) - toUnsignedInt(chip8.registers[x]));
     }
 
     /*
@@ -263,7 +263,7 @@ class Cpu {
         byte x = getX(opcode);
         byte y = getY(opcode);
         chip8.setCarry(toUnsignedInt(chip8.registers[x]) > toUnsignedInt(chip8.registers[y]));
-        chip8.registers[x] = (byte) (chip8.registers[x] - chip8.registers[y]);
+        chip8.registers[x] = (byte) (toUnsignedInt(chip8.registers[x]) - toUnsignedInt(chip8.registers[y]));
     }
 
     /*
@@ -274,7 +274,7 @@ class Cpu {
     private void _0x8xy4(short opcode) {
         byte x = getX(opcode);
         byte y = getY(opcode);
-        int sum = chip8.registers[x] + chip8.registers[y];
+        int sum = toUnsignedInt(chip8.registers[x]) + toUnsignedInt(chip8.registers[y]);
         chip8.setCarry(sum > 255);
         chip8.registers[x] = (byte) sum;
     }
@@ -330,7 +330,7 @@ class Cpu {
     */
     private void _0x7xkk(short opcode) {
         byte x = getX(opcode);
-        chip8.registers[x] += getKK(opcode);
+        chip8.registers[x] = (byte) (toUnsignedInt(chip8.registers[x]) + toUnsignedInt(getKK(opcode)));
     }
 
     /*
@@ -365,7 +365,7 @@ class Cpu {
     private void _0x4xkk(short opcode) {
         byte x = getX(opcode);
         byte kk = getKK(opcode);
-        if (Byte.compareUnsigned(chip8.registers[x], kk) != 0) {
+        if (chip8.registers[x] != kk) {
             chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
     }
@@ -390,7 +390,7 @@ class Cpu {
     */
     private void _0x2nnn(short opcode) {
         chip8.stack[chip8.stackPointer++] = chip8.pc;
-        chip8.pc = (short) (opcode & 0x0FFF);
+        chip8.pc = getNNN(opcode);
     }
 
     /*
@@ -459,7 +459,7 @@ class Cpu {
     */
     private void _0xFx07(short opcode) {
         short delayTimer = chip8.delayTimer;
-        System.out.println("setting Vx with delay timer: " + delayTimer);
+//        System.out.println("setting Vx with delay timer: " + delayTimer);
         chip8.registers[getX(opcode)] = (byte) delayTimer;
     }
 
@@ -485,9 +485,7 @@ class Cpu {
         DT is set equal to the value of Vx.
     */
     private void _0xFx15(short opcode) {
-        byte x = getX(opcode);
-        System.out.println("setting delay timer: " + x);
-        chip8.delayTimer = x;
+        chip8.delayTimer = (short) toUnsignedInt(chip8.registers[getX(opcode)]);
     }
 
     /*
@@ -496,9 +494,7 @@ class Cpu {
         ST is set equal to the value of Vx.
     */
     private void _0xFx18(short opcode) {
-        byte register = chip8.registers[getX(opcode)];
-        System.out.println("setting soundTimer: " + register);
-        chip8.soundTimer = register;
+        chip8.soundTimer = (short) toUnsignedInt(chip8.registers[getX(opcode)]);
     }
 
     /*
@@ -508,7 +504,7 @@ class Cpu {
     */
     private void _0xFx1E(short opcode) {
         byte x = getX(opcode);
-        chip8.I = (short) (chip8.registers[x] + chip8.I);
+        chip8.I = (short) (toUnsignedInt(chip8.registers[x]) + Short.toUnsignedInt(chip8.I));
     }
 
     /*
