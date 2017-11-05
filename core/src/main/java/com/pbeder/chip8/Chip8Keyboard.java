@@ -10,6 +10,7 @@ class Chip8Keyboard {
     private boolean[] keyboard = new boolean[16];
 
     boolean isKeyPressed(byte x) {
+        System.out.println("Is key " + Integer.toHexString(x) +" pressed:" + keyboard[x]);
         return keyboard[x];
     }
 
@@ -20,7 +21,7 @@ class Chip8Keyboard {
                 return (byte) i;
             }
         }
-        return (byte) 0x10;
+        return (byte) 0xFF; //Invalid
     }
 
     private void clear() {

@@ -2,6 +2,7 @@ package com.pbeder;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,17 +25,17 @@ public class Application extends ApplicationAdapter {
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
     private FPSLogger fps;
+    private final File file;
 
     public Application(String path) {
-        chip8 = new Chip8();
-        File file = new File(path);
-        chip8.loadFromFile(file);
-        keyboard = new InputProcessor(chip8);
+        file = new File(path);
+//        System.out.println("Working Directory = " + System.getProperty("user.dir"));
     }
 
 
     @Override
     public void create() {
+        chip8();
         app.log(LOG, "Creating game");
         fps = new FPSLogger();
         Gdx.input.setInputProcessor(keyboard);
@@ -46,10 +47,16 @@ public class Application extends ApplicationAdapter {
         shapeRenderer.setProjectionMatrix(camera.combined);
     }
 
+    private void chip8() {
+        Sound sound = Gdx.audio.newSound(Gdx.files.internal("core/out/production/resources/sounds/beep.wav"));
+        chip8 = new Chip8(sound::play);
+        chip8.loadFromFile(file);
+        keyboard = new InputProcessor(chip8);
+    }
+
     @Override
     public void render() {
         chip8.fpsStep();
-//        chip8.step();
         draw(chip8.getScreen());
         fps.log();
     }

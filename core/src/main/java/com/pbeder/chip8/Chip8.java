@@ -22,18 +22,20 @@ public class Chip8 {
     short pc;
     byte stackPointer;
     short[] stack = new short[RECURSION_DEPTH];
+    short delayTimer; // short instead of byte to avoid signed/unsigned problems in java
+    short soundTimer; // same as above
     private Cpu cpu = new Cpu(this);
     private Supplier<Byte> randomGenerator;
     private Chip8Screen screen;
     private Chip8Keyboard keyboard;
-    short delayTimer; // short instead of byte to avoid signed/unsigned problems in java
-    short soundTimer; // same as above
+    private Chip8Beeper beeper;
 
-    public Chip8() {
+    public Chip8(Chip8Beeper beeper) {
         arraycopy(FONTS, 0, memory, 0, NUMBER_OF_FONTS * FONT_HEIGHT);
         randomGenerator = new RandomByteSupplier();
         screen = new Chip8Screen(this);
         keyboard = new Chip8Keyboard();
+        this.beeper = beeper;
     }
 
     void setRandomGenerator(Supplier<Byte> randomGenerator) {
@@ -53,7 +55,7 @@ public class Chip8 {
     }
 
     public boolean[][] getScreen() {
-        return screen.getScreenConfiguration();
+        return screen.getScreen();
     }
 
     void writeSprite(byte x, byte y, byte sprite) {
@@ -77,16 +79,27 @@ public class Chip8 {
 
     public void fpsStep() {
         decrementDelayTimer();
+        decrementSoundTimer();
         short opcode;
         do {
             opcode = getOpcode();
+//            System.out.println("Opcode: " + Integer.toHexString(Short.toUnsignedInt(opcode)));
             handleOpcode(opcode);
         } while (notScreenDrawingOpcode(opcode));
     }
 
+    private void decrementSoundTimer() {
+        if (soundTimer > 0) {
+            soundTimer--;
+            if (soundTimer == 0) {
+                beeper.beep();
+            }
+        }
+    }
+
     private void decrementDelayTimer() {
         if (delayTimer > 0) {
-            delayTimer-=1;
+            delayTimer--;
         }
     }
 
@@ -105,6 +118,7 @@ public class Chip8 {
     byte getFirstKeyPressed() {
         return keyboard.getFirstKeyPressed();
     }
+
     boolean isAnyKeyPressed() {
         return keyboard.isAnyKeyPressed();
     }
