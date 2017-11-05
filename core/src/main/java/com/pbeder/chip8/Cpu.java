@@ -168,7 +168,8 @@ class Cpu {
         byte n = getN(opcode);
         for (int i = 0; i < n; i++) {
             byte sprite = chip8.memory[chip8.I + i];
-            chip8.writeSprite(xx, (byte) ((yy + i) % 32), sprite);
+            byte yyy = (byte) ((toUnsignedInt(yy) + i) % 32);
+            chip8.writeSprite(xx, yyy, sprite);
         }
     }
 
@@ -179,7 +180,7 @@ class Cpu {
     */
     private void _0xCxkk(short opcode) {
         byte x = getX(opcode);
-        byte kk = getKK(opcode);
+        short kk = getKK(opcode);
         final byte randomByte = chip8.getRandomByte();
         chip8.registers[x] = (byte) (randomByte & kk);
     }
@@ -329,8 +330,7 @@ class Cpu {
     */
     private void _0x7xkk(short opcode) {
         byte x = getX(opcode);
-        byte kk = getKK(opcode);
-        chip8.registers[x] += kk;
+        chip8.registers[x] += getKK(opcode);
     }
 
     /*
@@ -340,8 +340,8 @@ class Cpu {
     */
     private void _0x6xkk(short opcode) {
         byte x = getX(opcode);
-        byte kk = getKK(opcode);
-        chip8.registers[x] = kk;
+        short kk = getKK(opcode);
+        chip8.registers[x] = (byte) kk;
     }
 
     /*
@@ -365,7 +365,7 @@ class Cpu {
     private void _0x4xkk(short opcode) {
         byte x = getX(opcode);
         byte kk = getKK(opcode);
-        if (chip8.registers[x] != kk) {
+        if (Byte.compareUnsigned(chip8.registers[x], kk) != 0) {
             chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
     }
@@ -377,7 +377,7 @@ class Cpu {
     */
     private void _0x3xkk(short opcode) {
         byte x = getX(opcode);
-        byte kk = getKK(opcode);
+        short kk = getKK(opcode);
         if (chip8.registers[x] == kk) {
             chip8.pc += INSTRUCTION_SIZE_IN_BYTES;
         }
@@ -458,7 +458,9 @@ class Cpu {
         The value of DT is placed into Vx.
     */
     private void _0xFx07(short opcode) {
-        System.out.println("Missing Implementation _0xFx07");
+        short delayTimer = chip8.delayTimer;
+        System.out.println("setting Vx with delay timer: " + delayTimer);
+        chip8.registers[getX(opcode)] = (byte) delayTimer;
     }
 
     /*
@@ -483,7 +485,9 @@ class Cpu {
         DT is set equal to the value of Vx.
     */
     private void _0xFx15(short opcode) {
-        System.out.println("Missing Implementation _0xFx15");
+        byte x = getX(opcode);
+        System.out.println("setting delay timer: " + x);
+        chip8.delayTimer = x;
     }
 
     /*
@@ -492,7 +496,9 @@ class Cpu {
         ST is set equal to the value of Vx.
     */
     private void _0xFx18(short opcode) {
-        System.out.println("Missing Implementation _0xFx18");
+        byte register = chip8.registers[getX(opcode)];
+        System.out.println("setting soundTimer: " + register);
+        chip8.soundTimer = register;
     }
 
     /*
@@ -561,11 +567,11 @@ class Cpu {
         return (byte) (opcode & 0xFF);
     }
 
-    private short getNNN(short opcode) {
-        return (short) (opcode & 0xFFF);
-    }
-
     private byte getN(short opcode) {
         return (byte) (opcode & 0xF);
+    }
+
+    private short getNNN(short opcode) {
+        return (short) (opcode & 0xFFF);
     }
 }

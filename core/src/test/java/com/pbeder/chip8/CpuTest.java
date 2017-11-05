@@ -120,7 +120,7 @@ public class CpuTest extends Chip8TestBase {
         assertProgramCounterIs(pc + 2 * INSTRUCTION_SIZE_IN_BYTES);
     }
 
-    // 4XNN	Skips the next instruction if VX equals NN.
+    // 4XNN	Skips the next instruction if VX doesn't equal NN.
     @Test
     public void shouldNotSkipNextInstructionOn_4XNN() {
         //Given
@@ -669,7 +669,7 @@ public class CpuTest extends Chip8TestBase {
     // All drawing is XOR drawing (i.e. it toggles the screen pixels).
     // Sprites are drawn starting at position VX, VY. N is the number of 8bit rows that need to be drawn. If N is greater than 1, second line continues at position VX, VY+1, and so on.
     @Test
-    public void shouldDetectCollision() {
+    public void shouldDetectCollisionAndFadePixel() {
         //Given
         final short opCode = (short) 0xD3B2;
         final byte vx = (opCode >> 8) & 0xF;
@@ -677,7 +677,7 @@ public class CpuTest extends Chip8TestBase {
         boolean[][] screenConfiguration = new boolean[32][64];
         byte x = 56;
         byte y = 24;
-        screenConfiguration[y][x] = true;
+        screenConfiguration[y][x] = false;
         chip8.setPixel(x, y);
         final short someMemoryAddress = 0x0ABC;
         chip8.I = someMemoryAddress;

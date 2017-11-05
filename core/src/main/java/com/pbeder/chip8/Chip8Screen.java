@@ -2,6 +2,7 @@ package com.pbeder.chip8;
 
 import static com.pbeder.chip8.Chip8.SCREEN_HEIGHT;
 import static com.pbeder.chip8.Chip8.SCREEN_WIDTH;
+import static java.lang.Byte.toUnsignedInt;
 
 //The original implementation of the Chip-8 language used a 64x32-pixel monochrome display with this format:
 //        (0,0)     (63,0)
@@ -28,13 +29,12 @@ class Chip8Screen {
     }
 
     void writeSprite(byte x, byte y, byte sprite) {
-        y = (byte) (y % 32);
         final boolean[] line = screenConfiguration[y];
         for (int i = 0; i < 8; i++) {
-            int currentX = (x + i) % 64;
+            int currentX = (toUnsignedInt(x) + i) % 64 ;
             boolean currentSpriteBit = (sprite >> (7 - i) & 0x1) != 0;
             checkCollision(line[currentX], currentSpriteBit);
-            line[currentX] = currentSpriteBit;
+            line[currentX] = line[currentX] ^ currentSpriteBit;
         }
     }
 

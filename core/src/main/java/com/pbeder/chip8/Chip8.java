@@ -26,8 +26,8 @@ public class Chip8 {
     private Supplier<Byte> randomGenerator;
     private Chip8Screen screen;
     private Chip8Keyboard keyboard;
-    private byte delayTimer;
-    private byte soundTimer;
+    short delayTimer; // short instead of byte to avoid signed/unsigned problems in java
+    short soundTimer; // same as above
 
     public Chip8() {
         arraycopy(FONTS, 0, memory, 0, NUMBER_OF_FONTS * FONT_HEIGHT);
@@ -76,11 +76,18 @@ public class Chip8 {
     }
 
     public void fpsStep() {
+        decrementDelayTimer();
         short opcode;
         do {
             opcode = getOpcode();
             handleOpcode(opcode);
         } while (notScreenDrawingOpcode(opcode));
+    }
+
+    private void decrementDelayTimer() {
+        if (delayTimer > 0) {
+            delayTimer-=1;
+        }
     }
 
     public void step() {
