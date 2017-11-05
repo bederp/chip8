@@ -41,7 +41,8 @@ public class Application extends ApplicationAdapter {
     }
 
     private void chip8() {
-        Sound sound = Gdx.audio.newSound(Gdx.files.internal("core/out/production/resources/sounds/beep.wav"));
+//        Sound sound = Gdx.audio.newSound(Gdx.files.internal("core/out/production/resources/sounds/beep.wav"));
+        Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/beep.wav"));
         chip8 = new Chip8(sound::play);
         chip8.loadFromFile(file);
         InputProcessor keyboard = new InputProcessor(chip8);
