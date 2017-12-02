@@ -77,45 +77,25 @@ public class Chip8 {
         }
     }
 
-    public void fpsStep() {
-        decrementDelayTimer();
-        decrementSoundTimer();
-        short opcode;
-        do {
-            opcode = getOpcode();
-            System.out.println("Opcode: " + Integer.toHexString(Short.toUnsignedInt(opcode)));
-            handleOpcode(opcode);
-        } while (notScreenDrawingOpcode(opcode));
-        System.out.println("GOT OUT!");
-    }
-
-    public void step14() {
-        decrementDelayTimer();
-        decrementSoundTimer();
-        short opcode;
-        for (int i = 0; i < 14 ; i++) {
-            opcode = getOpcode();
-            handleOpcode(opcode);
+    public void stepTimes(int x) {
+        for (int i = 0; i < x; i++) {
+            handleOpcode(getOpcode());
         }
+        stepDelayTimer();
+        stepSoundTimer();
     }
 
-    private void decrementSoundTimer() {
+    private void stepSoundTimer() {
         if (soundTimer > 0) {
             soundTimer--;
-            if (soundTimer == 0) {
-                beeper.beep();
-            }
+            beeper.beep();
         }
     }
 
-    private void decrementDelayTimer() {
+    private void stepDelayTimer() {
         if (delayTimer > 0) {
             delayTimer--;
         }
-    }
-
-    public void step() {
-        handleOpcode(getOpcode());
     }
 
     void clearScreen() {
@@ -138,13 +118,7 @@ public class Chip8 {
         keyboard.setKey(key, isPressed);
     }
 
-    private boolean notScreenDrawingOpcode(short opcode) {
-        return (Short.toUnsignedInt(opcode) >>> 3 * 4) != 0xD;
-//        return (byte) (opcode >>> 3) == 0xD;
-    }
-
     private short getOpcode() {
-//        return (short) (toUnsignedInt(memory[pc]) << 8 | toUnsignedInt(memory[pc + 1]));
         return (short) (memory[pc] << 8 | memory[pc + 1] & 0xFF);
     }
 }

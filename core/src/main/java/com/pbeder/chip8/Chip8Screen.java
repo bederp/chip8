@@ -19,19 +19,10 @@ class Chip8Screen {
         return screen;
     }
 
-    void printScreen() {
-        for (boolean[] aScreenConfiguration : screen) {
-            for (boolean pixel : aScreenConfiguration) {
-                System.out.print(pixel ? "*" : ".");
-            }
-            System.out.println();
-        }
-    }
-
     void writeSprite(byte x, byte y, byte sprite) {
         final boolean[] line = screen[y];
         for (int i = 0; i < 8; i++) {
-            int currentX = (toUnsignedInt(x) + i) % 64 ;
+            int currentX = (toUnsignedInt(x) + i) % 64;
             boolean currentSpriteBit = (sprite >> (7 - i) & 0x1) != 0;
             checkCollision(line[currentX], currentSpriteBit);
             line[currentX] = line[currentX] ^ currentSpriteBit;
