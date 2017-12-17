@@ -11,3 +11,4 @@ hs_err_pid*
 .gradle/
 .idea/
 chip8.iml
+**/build
