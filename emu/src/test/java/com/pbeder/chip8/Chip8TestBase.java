@@ -1,5 +1,7 @@
 package com.pbeder.chip8;
 
+import org.hamcrest.core.Is;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -7,9 +9,6 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static com.pbeder.chip8.Fonts.FONT_HEIGHT;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public abstract class Chip8TestBase {
     Chip8 chip8;
@@ -19,7 +18,7 @@ public abstract class Chip8TestBase {
         chip8 = new Chip8(dummyBeeper());
     }
 
-    private Chip8Beeper dummyBeeper() {
+    private Beeper dummyBeeper() {
         return () -> {};
     }
 

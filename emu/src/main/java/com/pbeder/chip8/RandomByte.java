@@ -3,7 +3,7 @@ package com.pbeder.chip8;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class RandomByteSupplier extends Random implements Supplier<Byte> {
+class RandomByte extends Random implements Supplier<Byte> {
 
     private static final int BYTE_MASK = 256;
 

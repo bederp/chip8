@@ -1,5 +1,5 @@
 package com.pbeder.chip8;
 
-public interface Chip8Beeper {
+public interface Beeper {
     void beep();
 }

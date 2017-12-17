@@ -7,11 +7,11 @@ import static java.lang.Byte.toUnsignedInt;
 //The original implementation of the Chip-8 language used a 64x32-pixel monochrome display with this format:
 //        (0,0)     (63,0)
 //        (0,31)	(63,31)
-class Chip8Screen {
+class Screen {
     private boolean[][] screen = new boolean[SCREEN_HEIGHT][SCREEN_WIDTH];
     private Chip8 chip8;
 
-    Chip8Screen(Chip8 chip8) {
+    Screen(Chip8 chip8) {
         this.chip8 = chip8;
     }
 

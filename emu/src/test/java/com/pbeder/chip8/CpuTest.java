@@ -295,8 +295,8 @@ public class CpuTest extends Chip8TestBase {
     public void shouldNotSetCarry_8XY4() {
         //Given
         final short opCode = (short) 0x80F4;
-        final byte vX = (byte) 0xAB;
-        final byte vY = (byte) 0xCD;
+        final byte vX = (byte) 0x64;
+        final byte vY = (byte) 0x9B;
         final byte sum = (byte) (vX + vY);
         final byte x = (byte) 0x0;
         final byte y = (byte) 0xF;
@@ -325,7 +325,7 @@ public class CpuTest extends Chip8TestBase {
         chip8.handleOpcode(opCode);
         //Then
         assertThatRegisterXIs(x, sum);
-        assertCarryIsNotSet();
+        assertCarryIsSet();
     }
 
     // 8XY5	VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.

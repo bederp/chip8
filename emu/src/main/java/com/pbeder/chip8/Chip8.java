@@ -26,15 +26,15 @@ public class Chip8 {
     short soundTimer = -1;
     private Cpu cpu = new Cpu(this);
     private Supplier<Byte> randomGenerator;
-    private Chip8Screen screen;
-    private Chip8Keyboard keyboard;
-    private Chip8Beeper beeper;
+    private Screen screen;
+    private Keyboard keyboard;
+    private Beeper beeper;
 
-    public Chip8(Chip8Beeper beeper) {
+    public Chip8(Beeper beeper) {
         arraycopy(FONTS, 0, memory, 0, NUMBER_OF_FONTS * FONT_HEIGHT);
-        randomGenerator = new RandomByteSupplier();
-        screen = new Chip8Screen(this);
-        keyboard = new Chip8Keyboard();
+        randomGenerator = new RandomByte();
+        screen = new Screen(this);
+        keyboard = new Keyboard();
         this.beeper = beeper;
     }
 

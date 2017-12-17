@@ -6,7 +6,7 @@ package com.pbeder.chip8;
  | 7 | 8 | 9 | E |
  | A | 0 | B | F |
 */
-class Chip8Keyboard {
+class Keyboard {
     private boolean[] keyboard = new boolean[16];
 
     boolean isKeyPressed(byte x) {
