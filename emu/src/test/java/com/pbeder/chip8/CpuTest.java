@@ -1,10 +1,10 @@
 package com.pbeder.chip8;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.pbeder.chip8.Cpu.INSTRUCTION_SIZE_IN_BYTES;
 import static com.pbeder.chip8.Fonts.FONT_HEIGHT;
-import static org.junit.Assert.assertArrayEquals;
 
 public class CpuTest extends Chip8TestBase {
 
@@ -23,7 +23,7 @@ public class CpuTest extends Chip8TestBase {
         chip8.handleOpcode((short) 0x00E0);
 
         // Then
-        assertArrayEquals(chip8.getScreen(), new boolean[32][64]);
+        Assert.assertArrayEquals(chip8.getScreen(), new boolean[32][64]);
     }
 
     // 00EE	Returns from a subroutine.

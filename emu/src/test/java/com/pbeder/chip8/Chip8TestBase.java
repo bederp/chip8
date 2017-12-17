@@ -25,35 +25,35 @@ public abstract class Chip8TestBase {
 
     void assertProgramCounterIs(int previousFrameAddress) {
         //Chip8 PC is 12 bit but in Java I've used short to represent it that's why 0xFFF
-        assertThat(chip8.pc, is((short) (previousFrameAddress & 0xFFF)));
+        Assert.assertThat(chip8.pc, Is.is((short) (previousFrameAddress & 0xFFF)));
     }
 
     void assertStackPointerIs(int expectedStackPointer) {
-        assertThat(chip8.stackPointer, is((byte) expectedStackPointer));
+        Assert.assertThat(chip8.stackPointer, Is.is((byte) expectedStackPointer));
     }
 
     void assertTopStackIs(int previousPC) {
-        assertThat(chip8.stack[chip8.stackPointer - 1], is(((short) previousPC)));
+        Assert.assertThat(chip8.stack[chip8.stackPointer - 1], Is.is(((short) previousPC)));
     }
 
     void assertThatRegisterXIs(byte x, int value) {
-        assertThat(chip8.registers[x], is(((byte) value)));
+        Assert.assertThat(chip8.registers[x], Is.is(((byte) value)));
     }
 
     void assertCarryIsSet() {
-        assertThat(chip8.registers[0xF], is((byte) 1));
+        Assert.assertThat(chip8.registers[0xF], Is.is((byte) 1));
     }
 
     void assertCarryIsNotSet() {
-        assertThat(chip8.registers[0xF], is((byte) 0));
+        Assert.assertThat(chip8.registers[0xF], Is.is((byte) 0));
     }
 
     void assertIIs(int i) {
-        assertThat(chip8.I, is((short) i));
+        Assert.assertThat(chip8.I, Is.is((short) i));
     }
 
     void assertMemoryIs(short address, byte value) {
-        assertThat(chip8.memory[address], is(value));
+        Assert.assertThat(chip8.memory[address], Is.is(value));
     }
 
     // This is manual test check if console output contains default fonts -> 0-9, A-F
@@ -80,6 +80,6 @@ public abstract class Chip8TestBase {
     }
 
     void assertScreenConfigurationIs(boolean[][] screenConfiguration) {
-        assertTrue(Arrays.deepEquals(chip8.getScreen(), screenConfiguration));
+        Assert.assertTrue(Arrays.deepEquals(chip8.getScreen(), screenConfiguration));
     }
 }
