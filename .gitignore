@@ -10,5 +10,5 @@ hs_err_pid*
 /local.properties
 .gradle/
 .idea/
-chip8.iml
+*.iml
 **/build
