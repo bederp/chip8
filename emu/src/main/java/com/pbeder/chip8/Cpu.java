@@ -234,17 +234,17 @@ class Cpu {
     /*
         8xy7 - SUBN Vx, Vy
         Set Vx = Vy - Vx, set VF = NOT borrow.
-        If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
+        If Vy >= Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
     */
     private void _0x8xy7(short opcode) {
         byte x = getX(opcode);
         byte y = getY(opcode);
-        chip8.setCarry(toUnsignedInt(chip8.registers[y]) > toUnsignedInt(chip8.registers[x]));
+        chip8.setCarry(toUnsignedInt(chip8.registers[y]) >= toUnsignedInt(chip8.registers[x]));
         chip8.registers[x] = (byte) (toUnsignedInt(chip8.registers[y]) - toUnsignedInt(chip8.registers[x]));
     }
 
     /*
-        8xy6 - SHR Vx {, Vy}
+
         Set Vx = Vx SHR 1.
         If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
     */
@@ -252,18 +252,18 @@ class Cpu {
         byte x = getX(opcode);
         final int lsb = 0x1 & chip8.registers[x];
         chip8.setCarry(lsb == 1);
-        chip8.registers[x] = (byte) (chip8.registers[x] >>> 1);
+        chip8.registers[x] = (byte) (toUnsignedInt(chip8.registers[x]) >>> 1);
     }
 
     /*
         8xy5 - SUB Vx, Vy
         Set Vx = Vx - Vy, set VF = NOT borrow.
-        If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
+        If Vx >= Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
     */
     private void _0x8xy5(short opcode) {
         byte x = getX(opcode);
         byte y = getY(opcode);
-        chip8.setCarry(toUnsignedInt(chip8.registers[x]) > toUnsignedInt(chip8.registers[y]));
+        chip8.setCarry(toUnsignedInt(chip8.registers[x]) >= toUnsignedInt(chip8.registers[y]));
         chip8.registers[x] = (byte) (toUnsignedInt(chip8.registers[x]) - toUnsignedInt(chip8.registers[y]));
     }
 

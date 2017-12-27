@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static com.pbeder.chip8.Fonts.FONT_HEIGHT;
+import static org.junit.Assert.assertThat;
 
 public abstract class Chip8TestBase {
     Chip8 chip8;
@@ -24,35 +25,35 @@ public abstract class Chip8TestBase {
 
     void assertProgramCounterIs(int previousFrameAddress) {
         //Chip8 PC is 12 bit but in Java I've used short to represent it that's why 0xFFF
-        Assert.assertThat(chip8.pc, Is.is((short) (previousFrameAddress & 0xFFF)));
+        assertThat(chip8.pc, Is.is((short) (previousFrameAddress & 0xFFF)));
     }
 
     void assertStackPointerIs(int expectedStackPointer) {
-        Assert.assertThat(chip8.stackPointer, Is.is((byte) expectedStackPointer));
+        assertThat(chip8.stackPointer, Is.is((byte) expectedStackPointer));
     }
 
     void assertTopStackIs(int previousPC) {
-        Assert.assertThat(chip8.stack[chip8.stackPointer - 1], Is.is(((short) previousPC)));
+        assertThat(chip8.stack[chip8.stackPointer - 1], Is.is(((short) previousPC)));
     }
 
-    void assertThatRegisterXIs(byte x, int value) {
-        Assert.assertThat(chip8.registers[x], Is.is(((byte) value)));
+    void assertRegisterXIs(int x, int value) {
+        assertThat(chip8.registers[x], Is.is(((byte) value)));
     }
 
     void assertCarryIsSet() {
-        Assert.assertThat(chip8.registers[0xF], Is.is((byte) 1));
+        assertThat(chip8.registers[0xF], Is.is((byte) 1));
     }
 
     void assertCarryIsNotSet() {
-        Assert.assertThat(chip8.registers[0xF], Is.is((byte) 0));
+        assertThat(chip8.registers[0xF], Is.is((byte) 0));
     }
 
     void assertIIs(int i) {
-        Assert.assertThat(chip8.I, Is.is((short) i));
+        assertThat(chip8.I, Is.is((short) i));
     }
 
     void assertMemoryIs(short address, byte value) {
-        Assert.assertThat(chip8.memory[address], Is.is(value));
+        assertThat(chip8.memory[address], Is.is(value));
     }
 
     // This is manual test check if console output contains default fonts -> 0-9, A-F

@@ -186,7 +186,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, value);
+        assertRegisterXIs(x, value);
     }
 
     // 7XNN	Adds NN to VX.
@@ -202,7 +202,7 @@ public class CpuTest extends Chip8TestBase {
         chip8.registers[x] = vX;
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
     }
 
     // 7XNN	Adds NN to VX.
@@ -218,7 +218,7 @@ public class CpuTest extends Chip8TestBase {
         chip8.registers[x] = vX;
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
     }
 
     // 8XY0	Sets VX to the value of VY.
@@ -233,7 +233,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, vY);
+        assertRegisterXIs(x, vY);
     }
 
     // 8XY1	Sets VX to VX or VY.
@@ -251,7 +251,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, or);
+        assertRegisterXIs(x, or);
     }
 
     // 8XY2	Sets VX to VX and VY.
@@ -269,7 +269,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, and);
+        assertRegisterXIs(x, and);
     }
 
     // 8XY3	Sets VX to VX xor VY.
@@ -287,7 +287,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, xor);
+        assertRegisterXIs(x, xor);
     }
 
     // 8XY4	Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
@@ -305,7 +305,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
         assertCarryIsNotSet();
     }
 
@@ -324,7 +324,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
         assertCarryIsSet();
     }
 
@@ -343,7 +343,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
         assertCarryIsNotSet();
     }
 
@@ -362,7 +362,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
         assertCarryIsSet();
     }
 
@@ -381,7 +381,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
         assertCarryIsSet();
     }
 
@@ -396,7 +396,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, vX >>> 1);
+        assertRegisterXIs(x, Byte.toUnsignedInt(vX) >>> 1);
         assertCarryIsSet();
     }
 
@@ -411,7 +411,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, vX >>> 1);
+        assertRegisterXIs(x, Byte.toUnsignedInt(vX) >>> 1);
         assertCarryIsNotSet();
     }
 
@@ -430,7 +430,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
         assertCarryIsNotSet();
     }
 
@@ -449,7 +449,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, sum);
+        assertRegisterXIs(x, sum);
         assertCarryIsSet();
     }
 
@@ -464,7 +464,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, vX << 1);
+        assertRegisterXIs(x, vX << 1);
         assertCarryIsSet();
     }
 
@@ -479,7 +479,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, vX << 1);
+        assertRegisterXIs(x, vX << 1);
         assertCarryIsNotSet();
     }
 
@@ -554,7 +554,7 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opCode);
         //Then
-        assertThatRegisterXIs(x, 0xA2 & 0x0A);
+        assertRegisterXIs(x, 0xA2 & 0x0A);
     }
 
     // DXYN	Sprites stored in memory at location in index register (I), 8bits wide. Wraps around the screen. If when drawn, clears a pixel, register VF is set to 1 otherwise it is zero.
@@ -700,7 +700,7 @@ public class CpuTest extends Chip8TestBase {
 
     // FX1E	Adds VX to I.[3]
     @Test
-    public void shouldSumVxAndI() throws Exception {
+    public void shouldSumVxAndI() {
         //Given
         byte x = 5;
         byte vx = 0xA;
@@ -716,7 +716,7 @@ public class CpuTest extends Chip8TestBase {
 
     // FX29	Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.
     @Test
-    public void shouldSetIToFont6Place() throws Exception {
+    public void shouldSetIToFont6Place() {
         //Given
         byte x = 7;
         byte six = 6;
@@ -730,7 +730,7 @@ public class CpuTest extends Chip8TestBase {
 
     // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
     @Test
-    public void shouldConvert247InVxToBCD() throws Exception {
+    public void shouldConvert247InVxToBCD() {
         //Given
         short opCode = (short) 0xF333;
         chip8.I = 0x200;
@@ -745,7 +745,7 @@ public class CpuTest extends Chip8TestBase {
 
     // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
     @Test
-    public void shouldConvert255InVxToBCD() throws Exception {
+    public void shouldConvert255InVxToBCD() {
         //Given
         short opCode = (short) 0xF333;
         chip8.I = 0x200;
@@ -760,7 +760,7 @@ public class CpuTest extends Chip8TestBase {
 
     // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
     @Test
-    public void shouldConvert0InVxToBCD() throws Exception {
+    public void shouldConvert0InVxToBCD() {
         //Given
         short opCode = (short) 0xF333;
         chip8.I = 0x200;
@@ -775,7 +775,7 @@ public class CpuTest extends Chip8TestBase {
 
     // FX33	Stores the binary-coded decimal representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)
     @Test
-    public void shouldConvert9InVxToBCD() throws Exception {
+    public void shouldConvert9InVxToBCD() {
         //Given
         short opCode = (short) 0xF333;
         chip8.I = 0x200;
@@ -790,7 +790,7 @@ public class CpuTest extends Chip8TestBase {
 
     // FX55	Stores V0 to VX (including VX) in memory starting at address I.[4]
     @Test
-    public void shouldCopyRegistersToMemory() throws Exception {
+    public void shouldCopyRegistersToMemory() {
         //Given
         byte v0 = 0xA;
         byte v1 = 0x7;
@@ -816,7 +816,7 @@ public class CpuTest extends Chip8TestBase {
 
     // FX65	Fills V0 to VX (including VX) with values from memory starting at address I.[4]
     @Test
-    public void shouldFromMemoryToRegisters() throws Exception {
+    public void shouldFromMemoryToRegisters() {
         //Given
         byte v0 = 0xA;
         byte v1 = 0x7;
@@ -833,10 +833,39 @@ public class CpuTest extends Chip8TestBase {
         //When
         chip8.handleOpcode(opcode);
         //Then
-        assertThatRegisterXIs((byte) 0, v0);
-        assertThatRegisterXIs((byte) 1, v1);
-        assertThatRegisterXIs((byte) 2, v2);
-        assertThatRegisterXIs((byte) 3, v3);
-        assertThatRegisterXIs((byte) 4, v4);
+        assertRegisterXIs(0, v0);
+        assertRegisterXIs(1, v1);
+        assertRegisterXIs(2, v2);
+        assertRegisterXIs(3, v3);
+        assertRegisterXIs(4, v4);
+    }
+
+    //ERROR 6
+    //After substraction 1-1 register VF must be 1, but it's still 0.
+    @Test
+    public void ShouldPass_SCTEST_ERROR6() {
+        short opcode = (short) 0x8017;
+        //Given
+        chip8.registers[0] = 1;
+        chip8.registers[1] = 1;
+        //When
+        chip8.handleOpcode(opcode);
+        //Then
+        assertCarryIsSet();
+    }
+
+    //ERROR 15
+    //255 shr 1. VF must be 1, result = 127
+    @Test
+    public void ShouldPass_SCTEST_ERROR15() {
+        // 8xy6 - SHR Vx {, Vy}
+        short opcode = (short) 0x8016;
+        //Given
+        chip8.registers[0] = (byte) 255;
+        //When
+        chip8.handleOpcode(opcode);
+        //Then
+        assertCarryIsSet();
+        assertRegisterXIs(0, 127);
     }
 }
