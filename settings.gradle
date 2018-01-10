@@ -1,1 +1,1 @@
-include 'desktop', 'core', 'emu', 'roms'
+include 'desktop', 'core', 'emu', 'roms', 'disassembler'

@@ -569,7 +569,5 @@ class Cpu {
         return (byte) (opcode & 0xF);
     }
 
-    private short getNNN(short opcode) {
-        return (short) (opcode & 0xFFF);
-    }
+    private short getNNN(short opcode) { return (short) (opcode & 0xFFF); }
 }
