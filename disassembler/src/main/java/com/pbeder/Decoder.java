@@ -1,18 +1,23 @@
-public class Decoder {
+package com.pbeder;
 
-    String decode(short opcode, int pc) {
+import static java.lang.String.format;
+
+class Decoder {
+
+    private static final String OPCODE_NOT_RECOGNIZED = "Opcode not recognized";
+
+    String decode(short opcode) {
         switch (opcode & 0xF000) {
             case 0x0000:
-                _0(opcode);
-                break;
+                return _0(opcode);
             case 0x1000:
                 return "JP " + getNNN(opcode);
             case 0x2000:
                 return "CALL " + getNNN(opcode);
             case 0x3000:
-                return "SE Vx, " + getKK(opcode);
+                return "SE V" + getX(opcode) + ", " + getKK(opcode);
             case 0x4000:
-                return "SNE Vx, " + getKK(opcode);
+                return "SNE V" + getX(opcode) + ", " + getKK(opcode);
             case 0x5000:
                 return "SE V" + getX(opcode) + " V" + getY(opcode);
             case 0x6000:
@@ -30,17 +35,17 @@ public class Decoder {
             case 0xC000:
                 return "RND V" + getX(opcode) + ", " + getKK(opcode);
             case 0xD000:
-                return "DRW V" + getX(opcode) + ", V" + getY(opcode) + ", " + getKK(opcode);
+                return "DRW V" + getX(opcode) + ", V" + getY(opcode) + ", " + getN(opcode);
             case 0xE000:
-                _E(opcode);
-                break;
+                return _E(opcode);
             case 0xF000:
-                _F(opcode);
-                break;
+                return _F(opcode);
+            default:
+                return OPCODE_NOT_RECOGNIZED;
         }
     }
 
-     String _F(short opcode) {
+    private String _F(short opcode) {
         switch (opcode & 0x00FF) {
             case 0x0007:
                 return "LD V" + getX(opcode) + ", DT";
@@ -48,39 +53,35 @@ public class Decoder {
                 return "LD V" + getX(opcode) + ", K";
             case 0x0015:
                 return "LD DT, V" + getX(opcode);
-                break;
             case 0x0018:
                 return "LD ST, V" + getX(opcode);
             case 0x001E:
-                _0xFx1E(opcode);
-                break;
+                return "ADD I, V" + getX(opcode);
             case 0x0029:
-                _0xFx29(opcode);
-                break;
+                return "LD F, V" + getX(opcode);
             case 0x0033:
-                _0xFx33(opcode);
-                break;
+                return "LD B, V" + getX(opcode);
             case 0x0055:
-                _0xFx55(opcode);
-                break;
+                return "LD [I], V" + getX(opcode);
             case 0x0065:
-                _0xFx65(opcode);
-                break;
+                return "LD V" + getX(opcode) + ", [I]";
+            default:
+                return OPCODE_NOT_RECOGNIZED;
         }
     }
 
-    String _E(short opcode) {
+    private String _E(short opcode) {
         switch (opcode & 0x00FF) {
             case 0x009E:
                 return "SKP V" + getX(opcode);
             case 0x00A1:
                 return "SKNP V" + getX(opcode);
             default:
-                return "UNK";
+                return OPCODE_NOT_RECOGNIZED;
         }
     }
 
-    String _8(short opcode) {
+    private String _8(short opcode) {
         switch (opcode & 0x000F) {
             case 0x0000:
                 return "LD V" + getX(opcode) + ", V" + getY(opcode);
@@ -88,7 +89,6 @@ public class Decoder {
                 return "OR V" + getX(opcode) + ", V" + getY(opcode);
             case 0x0002:
                 return "AND V" + getX(opcode) + ", V" + getY(opcode);
-            break;
             case 0x0003:
                 return "XOR V" + getX(opcode) + ", V" + getY(opcode);
             case 0x0004:
@@ -101,37 +101,44 @@ public class Decoder {
                 return "SUBN V" + getX(opcode) + ", V" + getY(opcode);
             case 0x000E:
                 return "SHL V" + getX(opcode);
+            default:
+                return OPCODE_NOT_RECOGNIZED;
         }
     }
 
-    String _0(short opcode) {
+    private String _0(short opcode) {
         switch (opcode) {
             case 0x00E0:
                 return "CLS";
             case 0x00EE:
                 return "RET";
             default:
-                return "SYS" + getNNN(opcode);
+                return "SYS " + getNNN(opcode);
         }
     }
 
-    private byte getX(short opcode) {
-        return (byte) (opcode >>> 8 & 0xF);
+    private String getX(short opcode) {
+        byte x = (byte) (opcode >>> 8 & 0xF);
+        return format("%x", x);
     }
 
-    private byte getY(short opcode) {
-        return (byte) (opcode >>> 4 & 0xF);
+    private String getY(short opcode) {
+        byte y = (byte) (opcode >>> 4 & 0xF);
+        return format("%x", y);
     }
 
-    private byte getKK(short opcode) {
-        return (byte) (opcode & 0xFF);
+    private String getKK(short opcode) {
+        byte kk = (byte) (opcode & 0xFF);
+        return format("%02x", kk);
     }
 
-    private byte getN(short opcode) {
-        return (byte) (opcode & 0xF);
+    private String getN(short opcode) {
+        byte n = (byte) (opcode & 0xF);
+        return format("%x", n);
     }
 
-    private short getNNN(short opcode) {
-        return (short) (opcode & 0xFFF);
+    private String getNNN(short opcode) {
+        short nnn = (short) (opcode & 0xFFF);
+        return format("%03x", nnn);
     }
 }
