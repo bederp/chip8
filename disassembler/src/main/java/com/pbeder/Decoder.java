@@ -4,7 +4,7 @@ import static java.lang.String.format;
 
 class Decoder {
 
-    private static final String OPCODE_NOT_RECOGNIZED = "Opcode not recognized";
+    private static final String OPCODE_NOT_RECOGNIZED = "Unknown";
 
     String decode(short opcode) {
         switch (opcode & 0xF000) {

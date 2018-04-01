@@ -8,6 +8,7 @@ import static java.nio.file.Files.readAllBytes;
 
 public class Disassembler {
     private static final Decoder decoder = new Decoder();
+    private static final AsciiDecoder ascii = new AsciiDecoder();
 
     public static void main(String[] args) throws IOException {
         validateInput(args);
@@ -25,7 +26,8 @@ public class Disassembler {
         for (int i = 0; i < bytes.length - 1; i += 2) {
             short opcode = (short) (bytes[i] << 8 | bytes[i + 1] & 0xFF);
             String decoded = decoder.decode(opcode);
-            System.out.println(String.format("%03x: %04x (%s)", startAdress+i, opcode, decoded));
+            String ascii = Disassembler.ascii.decode(opcode);
+            System.out.println(String.format("%03x: %04x %-16s %s", startAdress+i, opcode, decoded, ascii));
         }
     }
 
