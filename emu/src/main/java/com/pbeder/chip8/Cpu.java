@@ -167,11 +167,9 @@ class Cpu {
         byte xx = chip8.registers[x];
         byte yy = chip8.registers[y];
         byte n = getN(opcode);
-        for (int i = 0; i < n; i++) {
-            byte sprite = chip8.memory[chip8.I + i];
-            byte yyy = (byte) ((toUnsignedInt(yy) + i) % 32);
-            chip8.drawByte(xx, yyy, sprite);
-        }
+        byte[] sprite = new byte[n];
+        System.arraycopy(chip8.memory, chip8.I, sprite, 0, n);
+        chip8.drawSprite(xx, yy, sprite);
     }
 
     /*
@@ -569,5 +567,7 @@ class Cpu {
         return (byte) (opcode & 0xF);
     }
 
-    private short getNNN(short opcode) { return (short) (opcode & 0xFFF); }
+    private short getNNN(short opcode) {
+        return (short) (opcode & 0xFFF);
+    }
 }

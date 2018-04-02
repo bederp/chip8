@@ -58,8 +58,8 @@ public class Chip8 {
         return screen.getScreen();
     }
 
-    void drawByte(byte x, byte y, byte sprite) {
-        screen.writeSprite(x, y, sprite);
+    void drawSprite(byte x, byte y, byte[] sprite) {
+        screen.drawSprite(x, y, sprite);
     }
 
     void setPixel(byte x, byte y) {
@@ -122,4 +122,5 @@ public class Chip8 {
     private short getOpcode() {
         return (short) (memory[pc] << 8 | memory[pc + 1] & 0xFF);
     }
+
 }
