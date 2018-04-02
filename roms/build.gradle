@@ -1,7 +1,3 @@
-apply plugin: 'java'
-
-sourceCompatibility = 1.9
-
 task zip(type:Zip) {
     from files(sourceSets.main.output.resourcesDir)
     destinationDir file(project.buildDir) // directory that you want your archive to be placed in

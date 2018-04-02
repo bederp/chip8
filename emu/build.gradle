@@ -1,7 +1,3 @@
-apply plugin: 'java'
-
-sourceCompatibility = 1.9
-
 dependencies{
     testCompile "junit:junit:$junitVersion"
 }

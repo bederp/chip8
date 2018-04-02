@@ -77,6 +77,7 @@ public class Chip8 {
         }
     }
 
+    //@60 FPS a.k.a 60 Hz
     public void stepTimes(int x) {
         for (int i = 0; i < x; i++) {
             handleOpcode(getOpcode());

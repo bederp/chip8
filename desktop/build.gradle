@@ -4,7 +4,6 @@ dependencies {
     compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 }
 
-sourceCompatibility = 1.9
 project.ext.mainClassName = "com.pbeder.desktop.DesktopLauncher"
 
 task run(dependsOn: classes, type: JavaExec) {
