@@ -7,6 +7,10 @@ buildscript {
     }
 }
 
+wrapper {
+    version 4.10
+}
+
 allprojects {
     apply plugin : 'java'
     sourceCompatibility = 1.10
